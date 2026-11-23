@@ -1,0 +1,278 @@
+[
+  {
+    "control_id": "HKMA-TMG1-4.1",
+    "framework": "HKMA SPM TM-G-1",
+    "domain": "Access & Identity",
+    "title": "Least Privilege & Periodic Access Recertification",
+    "description": "Authorized institutions must enforce least-privilege access across core financial ledgers and conduct periodic entitlement recertification to prevent privilege creep across departments.",
+    "keywords": ["privilege creep", "entitlement", "recertification", "least privilege", "cross-department", "access review"],
+    "violation_types": ["privilege_creep"],
+    "remediation_steps": [
+      "Revoke uncertified cross-department entitlements exceeding role baseline.",
+      "Enforce automated 90-day IAM access recertification workflows signed off by line managers.",
+      "Implement role-based entitlement ceilings in the Production IAM Console."
+    ],
+    "estimated_effort_hours": 16,
+    "regulatory_weight": 0.95
+  },
+  {
+    "control_id": "HKMA-TMG1-4.3",
+    "framework": "HKMA SPM TM-G-1",
+    "domain": "Access & Identity",
+    "title": "Segregation of Duties (SoD) in Payment & Ledger Operations",
+    "description": "Conflicting duties such as payment initiation and approval, or software development and production deployment, must be strictly segregated across independent personnel.",
+    "keywords": ["segregation of duties", "sod", "conflict", "approver", "requester", "payment", "deployment"],
+    "violation_types": ["sod_conflict"],
+    "remediation_steps": [
+      "Block dual-role entitlement assignments via preventive SoD policy rules in IAM.",
+      "Require independent second-line approval for SWIFT Payment Gateway and Core Portfolio Ledger transactions.",
+      "Audit all emergency break-glass overrides within 24 hours."
+    ],
+    "estimated_effort_hours": 24,
+    "regulatory_weight": 1.0
+  },
+  {
+    "control_id": "HKMA-TMG1-5.2",
+    "framework": "HKMA SPM TM-G-1",
+    "domain": "Change & Operations",
+    "title": "Formal Production Change Management & Ticket Traceability",
+    "description": "All configuration, schema, and IAM policy changes in production systems must be backed by an approved ITSM change ticket, peer review, and rollback plan.",
+    "keywords": ["change ticket", "unapproved change", "production", "configuration", "itsm", "deployment"],
+    "violation_types": ["unapproved_prod_change"],
+    "remediation_steps": [
+      "Enforce CI/CD and IAM pipeline gates requiring a valid approved ITSM change ticket ID.",
+      "Revert unauthorized production policy modifications and verify configuration checksums.",
+      "Conduct post-incident review with IT Operations and Change Advisory Board."
+    ],
+    "estimated_effort_hours": 18,
+    "regulatory_weight": 0.92
+  },
+  {
+    "control_id": "HKMA-TMG1-6.1",
+    "framework": "HKMA SPM TM-G-1",
+    "domain": "Data Protection",
+    "title": "Sensitive Client & Financial Data Exfiltration Prevention",
+    "description": "Bulk exports of customer KYC records, portfolio holdings, or treasury positions outside business hours require DLP inspection, business justification, and automated alerting.",
+    "keywords": ["exfiltration", "bulk export", "off hours", "kyc", "data leakage", "dlp", "records exported"],
+    "violation_types": ["off_hours_exfiltration"],
+    "remediation_steps": [
+      "Throttle bulk query exports on Client KYC Vault and Core Portfolio Ledger outside 08:00-20:00 HKT.",
+      "Require step-up MFA and manager pre-authorization for exports exceeding peer-group baseline.",
+      "Inspect endpoint DLP logs and quarantine anomalous export destinations."
+    ],
+    "estimated_effort_hours": 20,
+    "regulatory_weight": 0.98
+  },
+  {
+    "control_id": "HKMA-CRAF-3.2",
+    "framework": "HKMA C-RAF",
+    "domain": "Monitoring & Audit",
+    "title": "Dormant Account Lifecycle & Contractor Credential Deprovisioning",
+    "description": "Dormant, terminated, or inactive contractor accounts must be automatically suspended after 30 days of inactivity and monitored for unauthorized reactivation.",
+    "keywords": ["dormant", "inactive", "contractor", "reactivated", "deprovisioning", "stale account"],
+    "violation_types": ["dormant_account_abuse"],
+    "remediation_steps": [
+      "Disable accounts exceeding 30 days of inactivity automatically via HR-to-IAM lifecycle sync.",
+      "Rotate all shared or contractor service credentials and revoke active session tokens.",
+      "Place reactivated dormant accounts under 14-day heightened SIEM watch."
+    ],
+    "estimated_effort_hours": 12,
+    "regulatory_weight": 0.88
+  },
+  {
+    "control_id": "HKMA-TMG1-7.4",
+    "framework": "HKMA SPM TM-G-1",
+    "domain": "AI & Third-Party Governance",
+    "title": "Third-Party Cloud & Unapproved External AI Endpoint Governance",
+    "description": "Transmission of proprietary financial models or confidential client data to unapproved external generative AI APIs violates third-party outsourcing and data residency controls.",
+    "keywords": ["shadow ai", "external ai", "llm", "generative ai", "third-party", "api upload", "data residency"],
+    "violation_types": ["shadow_ai_leakage"],
+    "remediation_steps": [
+      "Block egress to unapproved external LLM endpoints at the corporate CASB/proxy layer.",
+      "Provision an approved internal enterprise AI gateway with PII redaction and audit logging.",
+      "Conduct mandatory AI acceptable-use retraining for affected departments."
+    ],
+    "estimated_effort_hours": 22,
+    "regulatory_weight": 0.94
+  },
+  {
+    "control_id": "ISO27001-A5.15",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Access & Identity",
+    "title": "Access Control Policy & Need-to-Know Enforcement",
+    "description": "Rules to control physical and logical access to information and associated assets shall be established based on business and information security requirements.",
+    "keywords": ["access control", "need to know", "cross department", "authorization", "entitlements"],
+    "violation_types": ["privilege_creep", "dormant_account_abuse"],
+    "remediation_steps": [
+      "Align IAM entitlement matrices with departmental job-function catalogs.",
+      "Review cross-departmental access grants quarterly with asset owners."
+    ],
+    "estimated_effort_hours": 14,
+    "regulatory_weight": 0.85
+  },
+  {
+    "control_id": "ISO27001-A5.18",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Access & Identity",
+    "title": "Access Rights Provisioning, Review & Revocation",
+    "description": "Access rights to information and other associated assets shall be provisioned, reviewed, modified and removed in accordance with the organization's access control topic-specific policy.",
+    "keywords": ["access rights", "revocation", "provisioning", "stale", "dormant", "review"],
+    "violation_types": ["privilege_creep", "dormant_account_abuse"],
+    "remediation_steps": [
+      "Automate deprovisioning triggers upon role transfer or project offboarding.",
+      "Maintain immutable evidence logs of quarterly access recertification campaigns."
+    ],
+    "estimated_effort_hours": 14,
+    "regulatory_weight": 0.87
+  },
+  {
+    "control_id": "ISO27001-A8.2",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Access & Identity",
+    "title": "Privileged Access Rights & Elevated Session Governance",
+    "description": "The allocation and use of privileged access rights shall be restricted and managed through a Privileged Access Management (PAM) vault with just-in-time elevation.",
+    "keywords": ["privileged access", "elevation", "admin", "pam", "root", "iam console", "privilege delta"],
+    "violation_types": ["privilege_creep", "sod_conflict", "unapproved_prod_change"],
+    "remediation_steps": [
+      "Migrate standing administrative privileges to Just-In-Time (JIT) PAM checkout.",
+      "Enable full session recording for Production IAM Console and SWIFT Payment Gateway."
+    ],
+    "estimated_effort_hours": 26,
+    "regulatory_weight": 0.96
+  },
+  {
+    "control_id": "ISO27001-A8.12",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Data Protection",
+    "title": "Data Leakage Prevention (DLP)",
+    "description": "Data leakage prevention measures shall be applied to systems, networks and any other devices that process, store or transmit sensitive information.",
+    "keywords": ["dlp", "data leakage", "export", "exfiltration", "upload", "sensitive data"],
+    "violation_types": ["off_hours_exfiltration", "shadow_ai_leakage"],
+    "remediation_steps": [
+      "Deploy content-aware DLP rules detecting KYC IDs, account numbers, and portfolio CSVs.",
+      "Enforce encryption and watermarking on authorized regulatory data exports."
+    ],
+    "estimated_effort_hours": 20,
+    "regulatory_weight": 0.93
+  },
+  {
+    "control_id": "ISO27001-A8.15",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Monitoring & Audit",
+    "title": "Immutable Event Logging & Anomaly Correlation",
+    "description": "Logs that record activities, exceptions, faults and other relevant events shall be produced, stored, protected and analyzed to detect anomalous authentication and access behavior.",
+    "keywords": ["logging", "audit trail", "siem", "failed login", "anomaly", "correlation", "monitoring"],
+    "violation_types": ["off_hours_exfiltration", "dormant_account_abuse", "unapproved_prod_change"],
+    "remediation_steps": [
+      "Forward all IAM, database, and AI gateway telemetry to tamper-evident WORM log storage.",
+      "Tune behavioral anomaly thresholds against peer-group baselines to reduce alert fatigue."
+    ],
+    "estimated_effort_hours": 15,
+    "regulatory_weight": 0.90
+  },
+  {
+    "control_id": "ISO27001-A8.32",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Change & Operations",
+    "title": "Change Management for Information Processing Facilities",
+    "description": "Changes to information processing facilities and information systems shall be subject to formal change management procedures including impact assessment and authorization.",
+    "keywords": ["change management", "change ticket", "production change", "authorization", "rollback"],
+    "violation_types": ["unapproved_prod_change", "sod_conflict"],
+    "remediation_steps": [
+      "Require dual-control verification linking Git/IaC commits to approved ServiceNow/Jira change tickets.",
+      "Block direct console edits in production except under audited emergency break-glass."
+    ],
+    "estimated_effort_hours": 18,
+    "regulatory_weight": 0.91
+  },
+  {
+    "control_id": "ISO27001-A5.3",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Change & Operations",
+    "title": "Segregation of Conflicting Duties",
+    "description": "Conflicting duties and conflicting areas of responsibility shall be segregated to reduce opportunities for unauthorized or unintentional modification or misuse of assets.",
+    "keywords": ["segregation", "conflicting duties", "sod", "fraud", "maker checker"],
+    "violation_types": ["sod_conflict"],
+    "remediation_steps": [
+      "Enforce maker-checker separation across financial ledger postings and IAM role approvals.",
+      "Run weekly automated SoD conflict matrix scans across all 120+ staff accounts."
+    ],
+    "estimated_effort_hours": 20,
+    "regulatory_weight": 0.95
+  },
+  {
+    "control_id": "ISO27001-A8.24",
+    "framework": "ISO/IEC 27001:2022",
+    "domain": "Data Protection",
+    "title": "Use of Cryptography & Tokenization for Data in Transit",
+    "description": "Rules for the effective use of cryptography, including cryptographic key management and data tokenization before external processing, shall be defined and implemented.",
+    "keywords": ["encryption", "tokenization", "data in transit", "external endpoint", "pii masking"],
+    "violation_types": ["shadow_ai_leakage", "off_hours_exfiltration"],
+    "remediation_steps": [
+      "Apply automated PII tokenization before any internal analytics dataset leaves secure enclaves.",
+      "Enforce TLS 1.3 and mutual authentication for internal data lake APIs."
+    ],
+    "estimated_effort_hours": 16,
+    "regulatory_weight": 0.86
+  },
+  {
+    "control_id": "NIST-AI-GOVERN-1.2",
+    "framework": "NIST AI RMF 1.0",
+    "domain": "AI & Third-Party Governance",
+    "title": "AI Governance Accountability & Shadow AI Inventory",
+    "description": "The characteristics and use of third-party AI systems and external LLM endpoints are inventoried, approved, and governed under organizational risk tolerances.",
+    "keywords": ["shadow ai", "ai governance", "llm", "inventory", "unapproved model", "external ai"],
+    "violation_types": ["shadow_ai_leakage"],
+    "remediation_steps": [
+      "Maintain a centralized registry of approved foundation models and enterprise AI sandboxes.",
+      "Configure DNS/proxy alerts for unauthorized external AI API domains."
+    ],
+    "estimated_effort_hours": 18,
+    "regulatory_weight": 0.92
+  },
+  {
+    "control_id": "NIST-AI-MAP-1.5",
+    "framework": "NIST AI RMF 1.0",
+    "domain": "AI & Third-Party Governance",
+    "title": "Data Privacy & Confidentiality Mapping in AI Workflows",
+    "description": "Organizational risk tolerances and client confidentiality boundaries are mapped prior to feeding corporate datasets into generative or predictive AI pipelines.",
+    "keywords": ["ai privacy", "confidentiality", "dataset upload", "kyc", "llm prompt", "training data"],
+    "violation_types": ["shadow_ai_leakage"],
+    "remediation_steps": [
+      "Implement pre-prompt PII/client-ID scrubbing middleware in the AI Research Sandbox.",
+      "Classify all datasets by sensitivity tier before granting AI Sandbox read permissions."
+    ],
+    "estimated_effort_hours": 16,
+    "regulatory_weight": 0.89
+  },
+  {
+    "control_id": "NIST-AI-MEASURE-2.6",
+    "framework": "NIST AI RMF 1.0",
+    "domain": "Monitoring & Audit",
+    "title": "Continuous Evaluation of Automated Detection & Alert Fatigue",
+    "description": "AI-based security and audit monitoring systems are regularly evaluated for precision, recall, false-positive burden, and error archetypes across business units.",
+    "keywords": ["evaluation", "false positive", "recall", "precision", "drift", "ai monitoring", "audit model"],
+    "violation_types": ["privilege_creep", "off_hours_exfiltration"],
+    "remediation_steps": [
+      "Track quarterly PR-AUC and false-positive rate per department for audit anomaly models.",
+      "Feed human auditor triage decisions back into threshold calibration reviews."
+    ],
+    "estimated_effort_hours": 12,
+    "regulatory_weight": 0.84
+  },
+  {
+    "control_id": "NIST-AI-MANAGE-2.2",
+    "framework": "NIST AI RMF 1.0",
+    "domain": "Monitoring & Audit",
+    "title": "Human-in-the-Loop Oversight & Auditable Escalation",
+    "description": "Mechanisms are maintained to supersede, disengage, or escalate AI-flagged governance alerts through documented human-in-the-loop review workflows.",
+    "keywords": ["human in the loop", "escalation", "triage", "audit review", "override", "ciso"],
+    "violation_types": ["sod_conflict", "unapproved_prod_change", "shadow_ai_leakage"],
+    "remediation_steps": [
+      "Preserve immutable audit review logs capturing reviewer identity, rationale, and disposition.",
+      "Define SLA escalation paths for Critical (>=80) findings to Information Security & Compliance."
+    ],
+    "estimated_effort_hours": 14,
+    "regulatory_weight": 0.90
+  }
+]
