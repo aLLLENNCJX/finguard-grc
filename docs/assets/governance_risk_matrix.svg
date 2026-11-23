@@ -12,7 +12,7 @@
      <cc:Agent>
       <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
      </cc:Agent>
-    </cc:creator>
+    </dc:creator>
    </cc:Work>
   </rdf:RDF>
  </metadata>
