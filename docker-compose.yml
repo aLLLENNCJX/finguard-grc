@@ -1,0 +1,9 @@
+services:
+  finguard-grc:
+    build: .
+    container_name: finguard-grc
+    ports:
+      - "8050:8050"
+    environment:
+      - FINGUARD_LLM_ENABLED=false
+    restart: unless-stopped

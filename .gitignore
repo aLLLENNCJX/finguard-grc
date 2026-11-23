@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.pytest_cache/
+
+# Generated runtime artifacts (keep structure, ignore large/mutable DB & binaries)
+data/generated/*.db
+data/generated/*.joblib
+*.log
+
+# Environment & IDE
+.env
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
