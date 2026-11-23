@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinGuard-GRC | Enterprise AI Governance & IS Audit Platform</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --primary: #1d4ed8;
+      --primary-soft: #dbeafe;
+      --accent: #0f766e;
+      --critical: #dc2626;
+      --critical-bg: #fee2e2;
+      --high: #ea580c;
+      --high-bg: #ffedd5;
+      --medium: #ca8a04;
+      --medium-bg: #fef9c3;
+      --low: #059669;
+      --low-bg: #d1fae5;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-alt: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --primary: #60a5fa;
+      --primary-soft: #1e3a8a;
+      --accent: #2dd4bf;
+      --critical: #f87171;
+      --critical-bg: #450a0a;
+      --high: #fb923c;
+      --high-bg: #431407;
+      --medium: #facc15;
+      --medium-bg: #422006;
+      --low: #34d399;
+      --low-bg: #064e3b;
+      --shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-badge {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #1d4ed8, #0f766e);
+      color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 15px;
+    }
+    .brand h1 { margin: 0; font-size: 18px; font-weight: 700; }
+    .brand p { margin: 0; font-size: 12px; color: var(--text-muted); }
+    .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+      background: var(--surface-alt); color: var(--text-muted); border: 1px solid var(--border);
+    }
+    button.btn {
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface-alt);
+      color: var(--text); padding: 7px 13px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    }
+    button.btn-primary {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    nav.tabs {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 24px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    nav.tabs button {
+      cursor: pointer; border: none; background: transparent; color: var(--text-muted);
+      padding: 8px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+    }
+    nav.tabs button.active {
+      background: var(--primary-soft); color: var(--primary);
+    }
+    main { max-width: 1320px; margin: 0 auto; padding: 20px 24px 48px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .kpi-value { font-size: 26px; font-weight: 800; margin: 6px 0 2px; }
+    .kpi-sub { font-size: 12px; color: var(--text-muted); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    h2.section-title { margin: 0 0 12px; font-size: 15.5px; font-weight: 700; }
+    .bar-row { margin-bottom: 11px; }
+    .bar-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .bar-track { height: 10px; background: var(--surface-alt); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { font-size: 11.5px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; background: var(--surface-alt); }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+    }
+    .badge-Critical { background: var(--critical-bg); color: var(--critical); }
+    .badge-High { background: var(--high-bg); color: var(--high); }
+    .badge-Medium { background: var(--medium-bg); color: var(--medium); }
+    .badge-Low { background: var(--low-bg); color: var(--low); }
+    .controls-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
+    select, input[type="text"], textarea {
+      background: var(--surface); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; font-size: 13px;
+    }
+    .heat-cell { text-align: center; font-weight: 700; border-radius: 6px; padding: 6px 4px; font-size: 12px; }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+      display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto;
+      padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .brief-box {
+      background: var(--surface-alt); border-left: 4px solid var(--primary);
+      border-radius: 8px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 14px;
+    }
+    .history-box {
+      background: var(--surface-alt); border-radius: 8px; padding: 10px 12px;
+      font-size: 12px; margin-bottom: 14px; max-height: 130px; overflow-y: auto;
+    }
+    .slider-group { margin-bottom: 16px; }
+    .slider-group label { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+    input[type="range"] { width: 100%; accent-color: var(--primary); }
+    svg.chart-svg { width: 100%; height: 245px; display: block; }
+    .svg-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11.5px; margin-top: 6px; color: var(--text-muted); }
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend-swatch { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-badge">FG</div>
+      <div>
+        <h1>FinGuard-GRC</h1>
+        <p>Enterprise AI Governance, IT Access Anomaly Detection &amp; IS Audit Platform</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="pill" id="reviewed-pill">Reviewed: 0</span>
+      <span class="pill" id="mode-pill">Mode: Loading...</span>
+      <button class="btn" id="theme-toggle" type="button">Toggle Dark Mode</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="active" data-tab="overview" type="button">1. Executive Overview</button>
+    <button data-tab="triage" type="button">2. Audit Triage Queue</button>
+    <button data-tab="rag" type="button">3. Compliance RAG Copilot</button>
+    <button data-tab="models" type="button">4. ML Benchmark &amp; Error Analysis</button>
+    <button data-tab="simulator" type="button">5. Remediation ROI Simulator</button>
+  </nav>
+
+  <main>
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <section id="tab-overview" class="tab-panel active">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="section-title">5-Domain IT Governance Maturity (Observable Telemetry)</h2>
+          <div id="domain-maturity-bars"></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Risk Tier Distribution &amp; Alert Compression</h2>
+          <div id="tier-summary"></div>
+        </div>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <h2 class="section-title">Department &times; Enterprise System Risk Heatmap (Mean Risk Score 0–100)</h2>
+        <div id="heatmap-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: AUDIT TRIAGE QUEUE -->
+    <section id="tab-triage" class="tab-panel">
+      <div class="card">
+        <div class="controls-bar">
+          <select id="filter-tier">
+            <option value="All">All Risk Tiers</option>
+            <option value="Critical">Critical (&ge;80)</option>
+            <option value="High">High (60–79)</option>
+            <option value="Medium">Medium (40–59)</option>
+            <option value="Low">Low (&lt;40)</option>
+          </select>
+          <select id="filter-dept"><option value="All">All Departments</option></select>
+          <select id="filter-status">
+            <option value="All">All Review Statuses</option>
+            <option value="Pending Review">Pending Review</option>
+            <option value="Confirmed Violation">Confirmed Violation</option>
+            <option value="False Positive">False Positive</option>
+            <option value="Remediation Assigned">Remediation Assigned</option>
+            <option value="Escalated to CISO">Escalated to CISO</option>
+          </select>
+          <span class="pill" id="triage-count">0 findings</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Event ID</th>
+                <th>Department / System</th>
+                <th>Risk Score</th>
+                <th>ML Prob</th>
+                <th>Primary Reason Codes</th>
+                <th>Mapped Controls</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="triage-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: COMPLIANCE RAG COPILOT -->
+    <section id="tab-rag" class="tab-panel">
+      <div class="card" style="margin-bottom:16px;">
+        <h2 class="section-title">Hybrid BM25 + TF-IDF Regulatory Compliance Copilot</h2>
+        <div class="controls-bar">
+          <input type="text" id="rag-input" style="flex:1; min-width:260px;"
+            placeholder="Describe an IT audit scenario (e.g., developer modified production IAM without change ticket)..." />
+          <button class="btn btn-primary" id="rag-search-btn" type="button">Retrieve Controls</button>
+        </div>
+        <div class="controls-bar" style="margin-bottom:0;">
+          <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Quick scenarios:</span>
+          <button class="btn rag-preset" type="button" data-q="off-hours bulk export of client KYC records">Off-hours KYC export</button>
+          <button class="btn rag-preset" type="button" data-q="confidential dataset uploaded to unapproved external LLM API">Shadow AI leakage</button>
+          <button class="btn rag-preset" type="button" data-q="segregation of duties conflict payment requester and approver">SoD payment conflict</button>
+          <button class="btn rag-preset" type="button" data-q="dormant contractor account reactivated after 90 days">Dormant account abuse</button>
+        </div>
+      </div>
+      <div id="rag-results"></div>
+    </section>
+
+    <!-- TAB 4: ML BENCHMARK & ERROR ANALYSIS -->
+    <section id="tab-models" class="tab-panel">
+      <div class="card" style="margin-bottom:16px; overflow-x:auto;">
+        <h2 class="section-title">5-Model 3-Way Chronological Benchmark (Train Days 0–53 / Val Days 54–66 / Holdout Test Days 67–89)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th><th>ROC-AUC</th><th>PR-AUC</th><th>Precision</th>
+              <th>Recall</th><th>F1</th><th>F2</th><th>FPR</th><th>Alert Compression</th><th>Hrs Saved/Qtr</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-tbody"></tbody>
+        </table>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="section-title">ROC Curve Comparison (Holdout Test Set)</h2>
+          <svg id="roc-svg" class="chart-svg" viewBox="0 0 420 245"></svg>
+          <div class="svg-legend" id="roc-legend"></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Precision-Recall Curve Comparison (Holdout Test Set)</h2>
+          <svg id="pr-svg" class="chart-svg" viewBox="0 0 420 245"></svg>
+          <div class="svg-legend" id="pr-legend"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="section-title">Top Risk Drivers (Permutation Importance)</h2>
+          <div id="feat-imp-bars"></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Dynamic Error Analysis &amp; Compliance RAG Ablation</h2>
+          <div id="error-analysis-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: REMEDIATION ROI SIMULATOR -->
+    <section id="tab-simulator" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2 class="section-title">What-If Governance &amp; Analyst Capacity Controls</h2>
+          <div class="slider-group">
+            <label>Governance Domain Focus</label>
+            <select id="sim-domain" style="width:100%;">
+              <option value="All">All Governance Domains</option>
+              <option value="Access & Identity">Access &amp; Identity</option>
+              <option value="Change & Operations">Change &amp; Operations</option>
+              <option value="Data Protection">Data Protection</option>
+              <option value="AI & Third-Party Governance">AI &amp; Third-Party Governance</option>
+              <option value="Monitoring & Audit">Monitoring &amp; Audit</option>
+            </select>
+          </div>
+          <div class="slider-group">
+            <label>ML Alert Operating Threshold <span id="sim-thresh-val">0.45</span></label>
+            <input type="range" id="sim-thresh" min="0.15" max="0.85" step="0.05" value="0.45" />
+          </div>
+          <div class="slider-group">
+            <label>Quarterly Audit Remediation Capacity (Hours) <span id="sim-budget-val">160h</span></label>
+            <input type="range" id="sim-budget" min="40" max="400" step="20" value="160" />
+          </div>
+          <p class="kpi-sub">Evaluated strictly on the out-of-sample Holdout Test cohort (Days 67–89) annualized to a 90-day quarter, preventing training-set optimism.</p>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Projected Quarterly Governance Impact</h2>
+          <div class="kpi-grid" id="sim-results-grid" style="margin-bottom:0;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- REVIEW MODAL -->
+  <div class="modal-backdrop" id="review-modal">
+    <div class="modal">
+      <h2 class="section-title" id="modal-title">Audit Finding Review</h2>
+      <p id="modal-meta" class="kpi-sub" style="margin-bottom:10px;"></p>
+      <div class="brief-box" id="modal-brief-box">Generating executive remediation brief...</div>
+      <div class="history-box" id="modal-history-box">No prior audit reviews recorded.</div>
+      <div class="slider-group">
+        <label>Disposition Status</label>
+        <select id="modal-status" style="width:100%;">
+          <option value="Confirmed Violation">Confirmed Violation</option>
+          <option value="False Positive">False Positive</option>
+          <option value="Remediation Assigned">Remediation Assigned</option>
+          <option value="Escalated to CISO">Escalated to CISO</option>
+        </select>
+      </div>
+      <div class="slider-group">
+        <label>Auditor Name</label>
+        <input type="text" id="modal-reviewer" value="Internal IT Auditor" style="width:100%;" />
+      </div>
+      <div class="slider-group">
+        <label>Audit Rationale / Remediation Note</label>
+        <textarea id="modal-comment" rows="3" style="width:100%;" placeholder="Document evidence verified or remediation owner..."></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn" id="modal-cancel" type="button">Cancel</button>
+        <button class="btn btn-primary" id="modal-save" type="button">Save Audit Decision</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__FINGUARD_API_MODE__ = false;
+window.__FINGUARD_SNAPSHOT__ = {"summary": {"total_events": 3600, "critical_findings": 130, "high_findings": 243, "medium_findings": 72, "low_findings": 3155, "overall_maturity": 69.2, "alert_compression_pct": 86.6, "analyst_hours_saved_quarter": 126.8, "avoided_exposure_hkd": 5420500, "domain_maturity": [{"domain": "Access & Identity", "maturity_score": 58.5, "open_high_risk_findings": 135, "status": "Needs Attention"}, {"domain": "Change & Operations", "maturity_score": 69.4, "open_high_risk_findings": 68, "status": "Moderate"}, {"domain": "Data Protection", "maturity_score": 66.7, "open_high_risk_findings": 90, "status": "Moderate"}, {"domain": "AI & Third-Party Governance", "maturity_score": 73.0, "open_high_risk_findings": 55, "status": "Moderate"}, {"domain": "Monitoring & Audit", "maturity_score": 78.2, "open_high_risk_findings": 25, "status": "Moderate"}], "heatmap": {"cells": [{"department": "Asset Management", "system_name": "AI Research Sandbox", "avg_risk": 13.3, "high_count": 3, "total": 77}, {"department": "Asset Management", "system_name": "Client KYC Vault", "avg_risk": 32.1, "high_count": 18, "total": 72}, {"department": "Asset Management", "system_name": "Core Portfolio Ledger", "avg_risk": 38.6, "high_count": 20, "total": 73}, {"department": "Asset Management", "system_name": "ERP General Ledger", "avg_risk": 16.6, "high_count": 4, "total": 55}, {"department": "Asset Management", "system_name": "HR & Payroll Portal", "avg_risk": 11.0, "high_count": 5, "total": 64}, {"department": "Asset Management", "system_name": "Production IAM Console", "avg_risk": 27.4, "high_count": 7, "total": 72}, {"department": "Asset Management", "system_name": "Risk Analytics Data Lake", "avg_risk": 22.6, "high_count": 7, "total": 72}, {"department": "Asset Management", "system_name": "SWIFT Payment Gateway", "avg_risk": 30.6, "high_count": 9, "total": 67}, {"department": "Finance & Accounting", "system_name": "AI Research Sandbox", "avg_risk": 13.6, "high_count": 2, "total": 74}, {"department": "Finance & Accounting", "system_name": "Client KYC Vault", "avg_risk": 31.6, "high_count": 18, "total": 77}, {"department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "avg_risk": 36.2, "high_count": 19, "total": 79}, {"department": "Finance & Accounting", "system_name": "ERP General Ledger", "avg_risk": 17.8, "high_count": 5, "total": 55}, {"department": "Finance & Accounting", "system_name": "HR & Payroll Portal", "avg_risk": 9.1, "high_count": 1, "total": 57}, {"department": "Finance & Accounting", "system_name": "Production IAM Console", "avg_risk": 32.0, "high_count": 11, "total": 64}, {"department": "Finance & Accounting", "system_name": "Risk Analytics Data Lake", "avg_risk": 21.9, "high_count": 4, "total": 69}, {"department": "Finance & Accounting", "system_name": "SWIFT Payment Gateway", "avg_risk": 28.2, "high_count": 5, "total": 63}, {"department": "IT Infrastructure", "system_name": "AI Research Sandbox", "avg_risk": 18.4, "high_count": 6, "total": 55}, {"department": "IT Infrastructure", "system_name": "Client KYC Vault", "avg_risk": 32.0, "high_count": 17, "total": 81}, {"department": "IT Infrastructure", "system_name": "Core Portfolio Ledger", "avg_risk": 31.6, "high_count": 14, "total": 140}, {"department": "IT Infrastructure", "system_name": "ERP General Ledger", "avg_risk": 15.1, "high_count": 2, "total": 123}, {"department": "IT Infrastructure", "system_name": "HR & Payroll Portal", "avg_risk": 9.2, "high_count": 3, "total": 63}, {"department": "IT Infrastructure", "system_name": "Production IAM Console", "avg_risk": 30.7, "high_count": 10, "total": 138}, {"department": "IT Infrastructure", "system_name": "Risk Analytics Data Lake", "avg_risk": 26.3, "high_count": 11, "total": 88}, {"department": "IT Infrastructure", "system_name": "SWIFT Payment Gateway", "avg_risk": 32.9, "high_count": 11, "total": 67}, {"department": "Operations", "system_name": "AI Research Sandbox", "avg_risk": 14.2, "high_count": 2, "total": 71}, {"department": "Operations", "system_name": "Client KYC Vault", "avg_risk": 28.2, "high_count": 11, "total": 64}, {"department": "Operations", "system_name": "Core Portfolio Ledger", "avg_risk": 31.0, "high_count": 11, "total": 73}, {"department": "Operations", "system_name": "ERP General Ledger", "avg_risk": 13.2, "high_count": 2, "total": 58}, {"department": "Operations", "system_name": "HR & Payroll Portal", "avg_risk": 7.5, "high_count": 1, "total": 41}, {"department": "Operations", "system_name": "Production IAM Console", "avg_risk": 33.5, "high_count": 12, "total": 60}, {"department": "Operations", "system_name": "Risk Analytics Data Lake", "avg_risk": 24.8, "high_count": 10, "total": 75}, {"department": "Operations", "system_name": "SWIFT Payment Gateway", "avg_risk": 25.6, "high_count": 3, "total": 59}, {"department": "Risk & Compliance", "system_name": "AI Research Sandbox", "avg_risk": 14.7, "high_count": 2, "total": 68}, {"department": "Risk & Compliance", "system_name": "Client KYC Vault", "avg_risk": 23.2, "high_count": 11, "total": 127}, {"department": "Risk & Compliance", "system_name": "Core Portfolio Ledger", "avg_risk": 30.6, "high_count": 18, "total": 150}, {"department": "Risk & Compliance", "system_name": "ERP General Ledger", "avg_risk": 13.9, "high_count": 3, "total": 57}, {"department": "Risk & Compliance", "system_name": "HR & Payroll Portal", "avg_risk": 7.3, "high_count": 2, "total": 75}, {"department": "Risk & Compliance", "system_name": "Production IAM Console", "avg_risk": 23.3, "high_count": 2, "total": 59}, {"department": "Risk & Compliance", "system_name": "Risk Analytics Data Lake", "avg_risk": 21.8, "high_count": 7, "total": 141}, {"department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "avg_risk": 31.5, "high_count": 10, "total": 64}, {"department": "Treasury & Markets", "system_name": "AI Research Sandbox", "avg_risk": 13.0, "high_count": 1, "total": 68}, {"department": "Treasury & Markets", "system_name": "Client KYC Vault", "avg_risk": 26.9, "high_count": 10, "total": 61}, {"department": "Treasury & Markets", "system_name": "Core Portfolio Ledger", "avg_risk": 35.3, "high_count": 13, "total": 61}, {"department": "Treasury & Markets", "system_name": "ERP General Ledger", "avg_risk": 14.0, "high_count": 3, "total": 63}, {"department": "Treasury & Markets", "system_name": "HR & Payroll Portal", "avg_risk": 9.8, "high_count": 3, "total": 60}, {"department": "Treasury & Markets", "system_name": "Production IAM Console", "avg_risk": 29.0, "high_count": 9, "total": 72}, {"department": "Treasury & Markets", "system_name": "Risk Analytics Data Lake", "avg_risk": 23.6, "high_count": 8, "total": 74}, {"department": "Treasury & Markets", "system_name": "SWIFT Payment Gateway", "avg_risk": 29.8, "high_count": 7, "total": 54}]}, "tier_distribution": {"Low": 3155, "High": 243, "Critical": 130, "Medium": 72}, "review_stats": {"reviewed_findings": 1, "total_review_actions": 1, "by_status": {"Confirmed Violation": 1, "Pending Review": 3599}}}, "events": [{"event_id": "EVT-101878", "timestamp": "2026-08-16T13:31:00Z", "day_index": 46, "split_role": "train", "employee_id": "EMP-1080", "department": "Risk & Compliance", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9784, "risk_score": 96.71, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Confirmed Violation", "event_summary": "EMP-1080 (Risk & Compliance) performed config_change on Core Portfolio Ledger (criticality=5, exported=24, ticket=0, sod=0.59, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.59)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 102d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": [{"event_id": "EVT-101878", "status": "Confirmed Violation", "reviewer": "Internal IT Auditor", "comment": "Verified test", "created_at": "2026-11-22T16:08:26Z"}]}, {"event_id": "EVT-101183", "timestamp": "2026-07-30T11:27:00Z", "day_index": 29, "split_role": "train", "employee_id": "EMP-1115", "department": "Asset Management", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9907, "risk_score": 92.44, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1115 (Asset Management) performed config_change on SWIFT Payment Gateway (criticality=5, exported=300, ticket=0, sod=0.64, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.64)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 43d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100535", "timestamp": "2026-07-14T11:30:00Z", "day_index": 13, "split_role": "train", "employee_id": "EMP-1043", "department": "Asset Management", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9895, "risk_score": 92.37, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1043 (Asset Management) performed config_change on Production IAM Console (criticality=5, exported=16, ticket=0, sod=0.75, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.75)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-100328", "timestamp": "2026-07-09T14:06:00Z", "day_index": 8, "split_role": "train", "employee_id": "EMP-1057", "department": "Treasury & Markets", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9855, "risk_score": 92.13, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1057 (Treasury & Markets) performed config_change on Production IAM Console (criticality=5, exported=160, ticket=0, sod=0.64, dormant=12d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.64)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 41d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-102082", "timestamp": "2026-08-22T01:10:00Z", "day_index": 52, "split_role": "train", "employee_id": "EMP-1056", "department": "Risk & Compliance", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9854, "risk_score": 92.12, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1056 (Risk & Compliance) performed config_change on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.77, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.77)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-101218", "timestamp": "2026-07-31T12:48:00Z", "day_index": 30, "split_role": "train", "employee_id": "EMP-1010", "department": "IT Infrastructure", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9839, "risk_score": 92.03, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1010 (IT Infrastructure) performed config_change on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.67, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.67)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 52d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100280", "timestamp": "2026-07-07T14:44:00Z", "day_index": 6, "split_role": "train", "employee_id": "EMP-1043", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9832, "risk_score": 91.99, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1043 (Asset Management) performed config_change on Core Portfolio Ledger (criticality=5, exported=106, ticket=0, sod=0.73, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.73)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+1, 90d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100568", "timestamp": "2026-07-15T12:31:00Z", "day_index": 14, "split_role": "train", "employee_id": "EMP-1004", "department": "IT Infrastructure", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9981, "risk_score": 91.89, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1004 (IT Infrastructure) performed privilege_grant on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.55, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.55)", "Uncertified privilege expansion (delta=+2, 190d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101179", "timestamp": "2026-07-30T23:28:00Z", "day_index": 29, "split_role": "train", "employee_id": "EMP-1066", "department": "Operations", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9804, "risk_score": 91.82, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1066 (Operations) performed config_change on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.71, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.71)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-103280", "timestamp": "2026-09-20T01:43:00Z", "day_index": 81, "split_role": "test", "employee_id": "EMP-1091", "department": "Asset Management", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9802, "risk_score": 91.81, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1091 (Asset Management) performed config_change on SWIFT Payment Gateway (criticality=5, exported=42, ticket=0, sod=0.69, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.69)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-102734", "timestamp": "2026-09-07T14:40:00Z", "day_index": 68, "split_role": "test", "employee_id": "EMP-1028", "department": "IT Infrastructure", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9966, "risk_score": 91.79, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1028 (IT Infrastructure) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=0, ticket=0, sod=0.56, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.56)", "Uncertified privilege expansion (delta=+2, 170d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-101684", "timestamp": "2026-08-12T13:34:00Z", "day_index": 42, "split_role": "train", "employee_id": "EMP-1082", "department": "IT Infrastructure", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9764, "risk_score": 91.58, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1082 (IT Infrastructure) performed config_change on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.52, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.52)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101384", "timestamp": "2026-08-04T13:22:00Z", "day_index": 34, "split_role": "train", "employee_id": "EMP-1085", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9928, "risk_score": 91.57, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1085 (Asset Management) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=0, ticket=0, sod=0.76, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.76)", "Uncertified privilege expansion (delta=+2, 118d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-102271", "timestamp": "2026-08-26T12:09:00Z", "day_index": 56, "split_role": "val", "employee_id": "EMP-1003", "department": "Treasury & Markets", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9898, "risk_score": 91.39, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1003 (Treasury & Markets) performed privilege_grant on Production IAM Console (criticality=5, exported=231, ticket=1, sod=0.59, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.59)", "Uncertified privilege expansion (delta=+3, 279d since review)"], "mapped_controls": ["HKMA-TMG1-4.1", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-102746", "timestamp": "2026-09-07T08:49:00Z", "day_index": 68, "split_role": "test", "employee_id": "EMP-1094", "department": "IT Infrastructure", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9729, "risk_score": 91.37, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1094 (IT Infrastructure) performed config_change on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.73, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.73)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 17d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101433", "timestamp": "2026-08-05T01:36:00Z", "day_index": 35, "split_role": "train", "employee_id": "EMP-1110", "department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9667, "risk_score": 91.0, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1110 (Risk & Compliance) performed config_change on SWIFT Payment Gateway (criticality=5, exported=296, ticket=0, sod=0.60, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.60)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101985", "timestamp": "2026-08-19T01:45:00Z", "day_index": 49, "split_role": "train", "employee_id": "EMP-1073", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.963, "risk_score": 90.78, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1073 (Asset Management) performed config_change on Core Portfolio Ledger (criticality=5, exported=108, ticket=0, sod=0.64, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.64)", "Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-103461", "timestamp": "2026-09-25T16:32:00Z", "day_index": 86, "split_role": "test", "employee_id": "EMP-1119", "department": "Finance & Accounting", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.961, "risk_score": 90.66, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1119 (Finance & Accounting) performed config_change on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.51, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.51)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 35d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101661", "timestamp": "2026-08-11T13:26:00Z", "day_index": 41, "split_role": "train", "employee_id": "EMP-1020", "department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9758, "risk_score": 89.55, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1020 (Risk & Compliance) performed config_change on SWIFT Payment Gateway (criticality=5, exported=70, ticket=0, sod=0.36, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 100d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100432", "timestamp": "2026-07-11T21:26:00Z", "day_index": 10, "split_role": "train", "employee_id": "EMP-1113", "department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9586, "risk_score": 88.52, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1113 (Finance & Accounting) performed config_change on Core Portfolio Ledger (criticality=5, exported=0, ticket=0, sod=0.38, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 115d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-102819", "timestamp": "2026-09-09T23:09:00Z", "day_index": 70, "split_role": "test", "employee_id": "EMP-1102", "department": "Operations", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9065, "risk_score": 87.39, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1102 (Operations) performed config_change on Production IAM Console (criticality=5, exported=181, ticket=0, sod=0.58, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.58)", "Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 58d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-101042", "timestamp": "2026-07-27T14:05:00Z", "day_index": 26, "split_role": "train", "employee_id": "EMP-1073", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9991, "risk_score": 86.95, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1073 (Asset Management) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=713, ticket=0, sod=0.83, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.83)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-101547", "timestamp": "2026-08-08T11:25:00Z", "day_index": 38, "split_role": "train", "employee_id": "EMP-1049", "department": "Asset Management", "system_name": "Client KYC Vault", "asset_criticality": 4, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9983, "risk_score": 86.9, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1049 (Asset Management) performed privilege_grant on Client KYC Vault (criticality=4, exported=397, ticket=0, sod=0.55, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.55)", "Uncertified privilege expansion (delta=+2, 226d since review)"], "mapped_controls": ["ISO27001-A8.2", "HKMA-TMG1-6.1"], "review_history": []}, {"event_id": "EVT-102962", "timestamp": "2026-09-13T15:44:00Z", "day_index": 74, "split_role": "test", "employee_id": "EMP-1054", "department": "Operations", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9981, "risk_score": 86.89, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1054 (Operations) performed privilege_grant on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.55, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.55)", "Uncertified privilege expansion (delta=+1, 151d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.1"], "review_history": []}, {"event_id": "EVT-101797", "timestamp": "2026-08-14T10:34:00Z", "day_index": 44, "split_role": "train", "employee_id": "EMP-1085", "department": "Asset Management", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9979, "risk_score": 86.88, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1085 (Asset Management) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=110, ticket=0, sod=0.88, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.88)", "Uncertified privilege expansion (delta=+2, 51d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101613", "timestamp": "2026-08-10T13:41:00Z", "day_index": 40, "split_role": "train", "employee_id": "EMP-1034", "department": "IT Infrastructure", "system_name": "Client KYC Vault", "asset_criticality": 4, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9978, "risk_score": 86.87, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1034 (IT Infrastructure) performed privilege_grant on Client KYC Vault (criticality=4, exported=222, ticket=0, sod=0.52, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.52)", "Uncertified privilege expansion (delta=+3, 270d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "HKMA-TMG1-6.1"], "review_history": []}, {"event_id": "EVT-101038", "timestamp": "2026-07-26T10:21:00Z", "day_index": 25, "split_role": "train", "employee_id": "EMP-1092", "department": "Risk & Compliance", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9978, "risk_score": 86.87, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1092 (Risk & Compliance) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=2, ticket=0, sod=0.91, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.91)", "Uncertified privilege expansion (delta=+2, 30d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "NIST-AI-MANAGE-2.2"], "review_history": []}, {"event_id": "EVT-102595", "timestamp": "2026-09-03T16:14:00Z", "day_index": 64, "split_role": "val", "employee_id": "EMP-1065", "department": "Finance & Accounting", "system_name": "Client KYC Vault", "asset_criticality": 4, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9975, "risk_score": 86.85, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1065 (Finance & Accounting) performed privilege_grant on Client KYC Vault (criticality=4, exported=48, ticket=0, sod=0.50, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.50)", "Uncertified privilege expansion (delta=+2, 200d since review)"], "mapped_controls": ["HKMA-TMG1-6.1", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101571", "timestamp": "2026-08-09T12:50:00Z", "day_index": 39, "split_role": "train", "employee_id": "EMP-1077", "department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9972, "risk_score": 86.83, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1077 (Finance & Accounting) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=197, ticket=0, sod=0.89, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.89)", "Uncertified privilege expansion (delta=+2, 86d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-101496", "timestamp": "2026-08-07T10:10:00Z", "day_index": 37, "split_role": "train", "employee_id": "EMP-1082", "department": "IT Infrastructure", "system_name": "Client KYC Vault", "asset_criticality": 4, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9972, "risk_score": 86.83, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1082 (IT Infrastructure) performed privilege_grant on Client KYC Vault (criticality=4, exported=206, ticket=0, sod=0.58, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.58)", "Uncertified privilege expansion (delta=+2, 157d since review)"], "mapped_controls": ["HKMA-TMG1-6.1", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101174", "timestamp": "2026-07-30T20:06:00Z", "day_index": 29, "split_role": "train", "employee_id": "EMP-1102", "department": "Operations", "system_name": "Client KYC Vault", "asset_criticality": 4, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9969, "risk_score": 86.82, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1102 (Operations) performed privilege_grant on Client KYC Vault (criticality=4, exported=79, ticket=0, sod=0.56, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.56)", "Uncertified privilege expansion (delta=+2, 141d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "HKMA-TMG1-6.1"], "review_history": []}, {"event_id": "EVT-100318", "timestamp": "2026-07-08T16:22:00Z", "day_index": 7, "split_role": "train", "employee_id": "EMP-1071", "department": "Finance & Accounting", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9967, "risk_score": 86.8, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1071 (Finance & Accounting) performed privilege_grant on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.51, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.51)", "Uncertified privilege expansion (delta=+1, 261d since review)"], "mapped_controls": ["HKMA-TMG1-4.1", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-103135", "timestamp": "2026-09-17T13:33:00Z", "day_index": 78, "split_role": "test", "employee_id": "EMP-1009", "department": "Treasury & Markets", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9965, "risk_score": 86.79, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1009 (Treasury & Markets) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.82, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.82)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-101865", "timestamp": "2026-08-16T10:55:00Z", "day_index": 46, "split_role": "train", "employee_id": "EMP-1012", "department": "Operations", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9965, "risk_score": 86.79, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1012 (Operations) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=395, ticket=0, sod=0.78, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.78)", "Uncertified privilege expansion (delta=+2, 46d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-102030", "timestamp": "2026-08-20T08:37:00Z", "day_index": 50, "split_role": "train", "employee_id": "EMP-1012", "department": "Operations", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9961, "risk_score": 86.77, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1012 (Operations) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=36, ticket=0, sod=0.96, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.96)", "Uncertified privilege expansion (delta=+2, 57d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-102631", "timestamp": "2026-09-04T10:47:00Z", "day_index": 65, "split_role": "val", "employee_id": "EMP-1029", "department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9959, "risk_score": 86.76, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1029 (Finance & Accounting) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=141, ticket=0, sod=0.95, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.95)", "Uncertified privilege expansion (delta=+2, 82d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-103301", "timestamp": "2026-09-21T17:33:00Z", "day_index": 82, "split_role": "test", "employee_id": "EMP-1091", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9955, "risk_score": 86.73, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1091 (Asset Management) performed payment_approve on Core Portfolio Ledger (criticality=5, exported=358, ticket=0, sod=0.92, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.92)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-102880", "timestamp": "2026-09-10T15:41:00Z", "day_index": 71, "split_role": "test", "employee_id": "EMP-1016", "department": "IT Infrastructure", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9951, "risk_score": 86.7, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1016 (IT Infrastructure) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=747, ticket=0, sod=0.80, dormant=5d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.80)", "Uncertified privilege expansion (delta=+2, 50d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101619", "timestamp": "2026-08-10T17:36:00Z", "day_index": 40, "split_role": "train", "employee_id": "EMP-1040", "department": "IT Infrastructure", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9947, "risk_score": 86.68, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1040 (IT Infrastructure) performed privilege_grant on Production IAM Console (criticality=5, exported=0, ticket=0, sod=0.56, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.56)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100495", "timestamp": "2026-07-13T20:11:00Z", "day_index": 12, "split_role": "train", "employee_id": "EMP-1064", "department": "IT Infrastructure", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9917, "risk_score": 86.5, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1064 (IT Infrastructure) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.82, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.82)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-102001", "timestamp": "2026-08-20T09:11:00Z", "day_index": 50, "split_role": "train", "employee_id": "EMP-1005", "department": "Finance & Accounting", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9901, "risk_score": 86.41, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1005 (Finance & Accounting) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=11, ticket=1, sod=0.95, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.95)", "Uncertified privilege expansion (delta=+1, 94d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-100902", "timestamp": "2026-07-23T15:04:00Z", "day_index": 22, "split_role": "train", "employee_id": "EMP-1049", "department": "Asset Management", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9887, "risk_score": 86.32, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1049 (Asset Management) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.91, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.91)", "Uncertified privilege expansion (delta=+2, 49d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-100484", "timestamp": "2026-07-13T13:23:00Z", "day_index": 12, "split_role": "train", "employee_id": "EMP-1037", "department": "Asset Management", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9872, "risk_score": 86.23, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1037 (Asset Management) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=0, ticket=0, sod=0.78, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.78)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "review_history": []}, {"event_id": "EVT-100139", "timestamp": "2026-07-04T09:08:00Z", "day_index": 3, "split_role": "train", "employee_id": "EMP-1057", "department": "Treasury & Markets", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9865, "risk_score": 86.19, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1057 (Treasury & Markets) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=16, ticket=0, sod=0.85, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.85)"], "mapped_controls": ["HKMA-TMG1-4.3", "HKMA-TMG1-6.1"], "review_history": []}, {"event_id": "EVT-101759", "timestamp": "2026-08-13T17:52:00Z", "day_index": 43, "split_role": "train", "employee_id": "EMP-1068", "department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9833, "risk_score": 86.0, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1068 (Risk & Compliance) performed privilege_grant on SWIFT Payment Gateway (criticality=5, exported=22, ticket=1, sod=0.62, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.62)", "Uncertified privilege expansion (delta=+2, 45d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101923", "timestamp": "2026-08-18T11:54:00Z", "day_index": 48, "split_role": "train", "employee_id": "EMP-1038", "department": "Risk & Compliance", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9946, "risk_score": 85.67, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1038 (Risk & Compliance) performed config_change on Core Portfolio Ledger (criticality=5, exported=252, ticket=0, sod=0.28, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101976", "timestamp": "2026-08-19T13:30:00Z", "day_index": 49, "split_role": "train", "employee_id": "EMP-1107", "department": "Finance & Accounting", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9718, "risk_score": 85.31, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1107 (Finance & Accounting) performed privilege_grant on SWIFT Payment Gateway (criticality=5, exported=0, ticket=1, sod=0.63, dormant=5d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.63)", "Uncertified privilege expansion (delta=+2, 28d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-103356", "timestamp": "2026-09-22T13:51:00Z", "day_index": 83, "split_role": "test", "employee_id": "EMP-1063", "department": "Treasury & Markets", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "normal", "is_violation": 0, "ml_probability": 0.9047, "risk_score": 85.28, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1063 (Treasury & Markets) performed config_change on Production IAM Console (criticality=5, exported=112, ticket=0, sod=0.47, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 148d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-103347", "timestamp": "2026-09-22T11:41:00Z", "day_index": 83, "split_role": "test", "employee_id": "EMP-1005", "department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9044, "risk_score": 85.26, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1005 (Finance & Accounting) performed config_change on Core Portfolio Ledger (criticality=5, exported=104, ticket=0, sod=0.45, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 137d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-100267", "timestamp": "2026-07-07T16:37:00Z", "day_index": 6, "split_role": "train", "employee_id": "EMP-1020", "department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9872, "risk_score": 85.23, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1020 (Risk & Compliance) performed config_change on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.11, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101709", "timestamp": "2026-08-12T11:50:00Z", "day_index": 42, "split_role": "train", "employee_id": "EMP-1096", "department": "Operations", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9862, "risk_score": 85.17, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1096 (Operations) performed config_change on SWIFT Payment Gateway (criticality=5, exported=0, ticket=0, sod=0.39, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 75d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101879", "timestamp": "2026-08-16T12:55:00Z", "day_index": 46, "split_role": "train", "employee_id": "EMP-1120", "department": "Operations", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9847, "risk_score": 85.08, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1120 (Operations) performed config_change on Production IAM Console (criticality=5, exported=1416, ticket=0, sod=0.36, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket", "Uncertified privilege expansion (delta=+2, 74d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-102436", "timestamp": "2026-08-30T14:28:00Z", "day_index": 60, "split_role": "val", "employee_id": "EMP-1068", "department": "Risk & Compliance", "system_name": "SWIFT Payment Gateway", "asset_criticality": 5, "action_type": "payment_approve", "violation_type": "sod_conflict", "is_violation": 1, "ml_probability": 0.9674, "risk_score": 85.04, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1068 (Risk & Compliance) performed payment_approve on SWIFT Payment Gateway (criticality=5, exported=2325, ticket=0, sod=0.73, dormant=0d, ext_ai=0)", "reason_codes": ["SoD conflict score elevated (0.73)", "Uncertified privilege expansion (delta=+2, 33d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "ISO27001-A8.2"], "review_history": []}, {"event_id": "EVT-101843", "timestamp": "2026-08-16T14:46:00Z", "day_index": 46, "split_role": "train", "employee_id": "EMP-1075", "department": "Treasury & Markets", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9838, "risk_score": 85.03, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1075 (Treasury & Markets) performed config_change on Production IAM Console (criticality=5, exported=390, ticket=0, sod=0.36, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-101921", "timestamp": "2026-08-18T17:38:00Z", "day_index": 48, "split_role": "train", "employee_id": "EMP-1102", "department": "Operations", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9975, "risk_score": 84.85, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1102 (Operations) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=1779, ticket=0, sod=0.45, dormant=0d, ext_ai=0)", "reason_codes": ["Uncertified privilege expansion (delta=+2, 237d since review)"], "mapped_controls": ["HKMA-TMG1-4.3", "HKMA-TMG1-5.2"], "review_history": []}, {"event_id": "EVT-101525", "timestamp": "2026-08-08T08:14:00Z", "day_index": 38, "split_role": "train", "employee_id": "EMP-1061", "department": "Asset Management", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9808, "risk_score": 84.85, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1061 (Asset Management) performed config_change on Production IAM Console (criticality=5, exported=215, ticket=0, sod=0.45, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "review_history": []}, {"event_id": "EVT-102632", "timestamp": "2026-09-04T16:15:00Z", "day_index": 65, "split_role": "val", "employee_id": "EMP-1119", "department": "Finance & Accounting", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "config_change", "violation_type": "unapproved_prod_change", "is_violation": 1, "ml_probability": 0.9805, "risk_score": 84.83, "risk_tier": "Critical", "primary_domain": "Change & Operations", "review_status": "Pending Review", "event_summary": "EMP-1119 (Finance & Accounting) performed config_change on Core Portfolio Ledger (criticality=5, exported=75, ticket=0, sod=0.28, dormant=0d, ext_ai=0)", "reason_codes": ["Production configuration change without ITSM ticket"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.3"], "review_history": []}, {"event_id": "EVT-101754", "timestamp": "2026-08-13T12:08:00Z", "day_index": 43, "split_role": "train", "employee_id": "EMP-1027", "department": "Treasury & Markets", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9972, "risk_score": 84.83, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1027 (Treasury & Markets) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=204, ticket=1, sod=0.45, dormant=0d, ext_ai=0)", "reason_codes": ["Uncertified privilege expansion (delta=+2, 120d since review)"], "mapped_controls": ["HKMA-TMG1-6.1", "HKMA-TMG1-4.1"], "review_history": []}, {"event_id": "EVT-101188", "timestamp": "2026-07-30T12:58:00Z", "day_index": 29, "split_role": "train", "employee_id": "EMP-1088", "department": "IT Infrastructure", "system_name": "Core Portfolio Ledger", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9968, "risk_score": 84.81, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1088 (IT Infrastructure) performed privilege_grant on Core Portfolio Ledger (criticality=5, exported=0, ticket=0, sod=0.29, dormant=0d, ext_ai=0)", "reason_codes": ["Uncertified privilege expansion (delta=+2, 124d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.1"], "review_history": []}, {"event_id": "EVT-102175", "timestamp": "2026-08-24T14:58:00Z", "day_index": 54, "split_role": "val", "employee_id": "EMP-1073", "department": "Asset Management", "system_name": "Production IAM Console", "asset_criticality": 5, "action_type": "privilege_grant", "violation_type": "privilege_creep", "is_violation": 1, "ml_probability": 0.9964, "risk_score": 84.79, "risk_tier": "Critical", "primary_domain": "Access & Identity", "review_status": "Pending Review", "event_summary": "EMP-1073 (Asset Management) performed privilege_grant on Production IAM Console (criticality=5, exported=0, ticket=1, sod=0.49, dormant=0d, ext_ai=0)", "reason_codes": ["Uncertified privilege expansion (delta=+2, 99d since review)"], "mapped_controls": ["HKMA-TMG1-5.2", "HKMA-TMG1-4.1"], "review_history": []}], "evaluation": {"split_info": {"total_events": 3600, "train_events": 2160, "val_events": 520, "test_events": 920, "train_end_day": 53, "val_end_day": 66, "cutoff_day": 66, "train_violation_rate": 0.1102, "val_violation_rate": 0.1, "test_violation_rate": 0.0891}, "benchmarks": [{"model_name": "Rule-Based SIEM Baseline", "roc_auc": 0.6172, "pr_auc": 0.2992, "precision": 0.2482, "recall": 0.4146, "f1": 0.3105, "f2": 0.3656, "fpr": 0.1229, "alert_compression_ratio": 0.8511, "analyst_hours_saved_quarter": 82.5, "threshold": 0.45, "confusion_matrix": {"tn": 735, "fp": 103, "fn": 48, "tp": 34}}, {"model_name": "Isolation Forest (Unsupervised)", "roc_auc": 0.8476, "pr_auc": 0.3018, "precision": 0.2091, "recall": 0.8415, "f1": 0.335, "f2": 0.5243, "fpr": 0.3115, "alert_compression_ratio": 0.6413, "analyst_hours_saved_quarter": 51.8, "threshold": 0.38, "confusion_matrix": {"tn": 577, "fp": 261, "fn": 13, "tp": 69}}, {"model_name": "Logistic Regression (Balanced)", "roc_auc": 0.9276, "pr_auc": 0.5111, "precision": 0.3333, "recall": 0.8293, "f1": 0.4755, "f2": 0.6391, "fpr": 0.1623, "alert_compression_ratio": 0.7783, "analyst_hours_saved_quarter": 57.8, "threshold": 0.53, "confusion_matrix": {"tn": 702, "fp": 136, "fn": 14, "tp": 68}}, {"model_name": "Random Forest Classifier", "roc_auc": 0.9908, "pr_auc": 0.9291, "precision": 0.6667, "recall": 0.9512, "f1": 0.7839, "f2": 0.8764, "fpr": 0.0465, "alert_compression_ratio": 0.8728, "analyst_hours_saved_quarter": 130.5, "threshold": 0.37, "confusion_matrix": {"tn": 799, "fp": 39, "fn": 4, "tp": 78}}, {"model_name": "HistGradientBoosting (Champion)", "roc_auc": 0.9926, "pr_auc": 0.9351, "precision": 0.6423, "recall": 0.9634, "f1": 0.7707, "f2": 0.8758, "fpr": 0.0525, "alert_compression_ratio": 0.8663, "analyst_hours_saved_quarter": 126.8, "threshold": 0.33, "confusion_matrix": {"tn": 794, "fp": 44, "fn": 3, "tp": 79}}], "curves": {"Rule-Based SIEM Baseline": {"roc": [{"x": 0.0, "y": 0.0}, {"x": 0.0, "y": 0.0244}, {"x": 0.0, "y": 0.061}, {"x": 0.0012, "y": 0.061}, {"x": 0.0024, "y": 0.0732}, {"x": 0.0036, "y": 0.1707}, {"x": 0.0107, "y": 0.1951}, {"x": 0.0143, "y": 0.2195}, {"x": 0.0167, "y": 0.2195}, {"x": 0.0203, "y": 0.2195}, {"x": 0.0239, "y": 0.2317}, {"x": 0.0489, "y": 0.2439}, {"x": 0.0621, "y": 0.2683}, {"x": 0.0668, "y": 0.2805}, {"x": 0.0716, "y": 0.2805}, {"x": 0.0764, "y": 0.3537}, {"x": 0.1229, "y": 0.4146}, {"x": 0.1277, "y": 0.4146}, {"x": 0.1313, "y": 0.4146}, {"x": 0.1563, "y": 0.4268}, {"x": 0.2267, "y": 0.5}, {"x": 0.2387, "y": 0.5}, {"x": 0.7232, "y": 0.7073}, {"x": 1.0, "y": 1.0}], "pr": [{"x": 0.0, "y": 1.0}, {"x": 0.0244, "y": 1.0}, {"x": 0.061, "y": 1.0}, {"x": 0.061, "y": 0.8333}, {"x": 0.0732, "y": 0.75}, {"x": 0.1707, "y": 0.8235}, {"x": 0.1951, "y": 0.64}, {"x": 0.2195, "y": 0.6}, {"x": 0.2195, "y": 0.5625}, {"x": 0.2195, "y": 0.5143}, {"x": 0.2317, "y": 0.4872}, {"x": 0.2439, "y": 0.3279}, {"x": 0.2683, "y": 0.2973}, {"x": 0.2805, "y": 0.2911}, {"x": 0.2805, "y": 0.2771}, {"x": 0.3537, "y": 0.3118}, {"x": 0.4146, "y": 0.2482}, {"x": 0.4146, "y": 0.2411}, {"x": 0.4146, "y": 0.2361}, {"x": 0.4268, "y": 0.2108}, {"x": 0.5, "y": 0.1775}, {"x": 0.5, "y": 0.1701}, {"x": 0.7073, "y": 0.0873}, {"x": 1.0, "y": 0.0891}]}, "Isolation Forest (Unsupervised)": {"roc": [{"x": 0.0, "y": 0.0}, {"x": 0.0048, "y": 0.0}, {"x": 0.0107, "y": 0.0366}, {"x": 0.0215, "y": 0.0732}, {"x": 0.0239, "y": 0.0976}, {"x": 0.0322, "y": 0.1098}, {"x": 0.0334, "y": 0.1463}, {"x": 0.0394, "y": 0.1585}, {"x": 0.0406, "y": 0.1829}, {"x": 0.043, "y": 0.1951}, {"x": 0.0477, "y": 0.2805}, {"x": 0.0501, "y": 0.2927}, {"x": 0.0549, "y": 0.3537}, {"x": 0.0585, "y": 0.3659}, {"x": 0.0597, "y": 0.3902}, {"x": 0.068, "y": 0.4146}, {"x": 0.0692, "y": 0.439}, {"x": 0.0764, "y": 0.4512}, {"x": 0.0776, "y": 0.5}, {"x": 0.0835, "y": 0.5122}, {"x": 0.0859, "y": 0.5488}, {"x": 0.0931, "y": 0.561}, {"x": 0.105, "y": 0.5854}, {"x": 0.1134, "y": 0.6098}, {"x": 0.1265, "y": 0.6341}, {"x": 0.142, "y": 0.6463}, {"x": 0.1468, "y": 0.6707}, {"x": 0.1623, "y": 0.6829}, {"x": 0.173, "y": 0.7073}, {"x": 0.1778, "y": 0.7195}, {"x": 0.1802, "y": 0.7439}, {"x": 0.2315, "y": 0.7561}, {"x": 0.2589, "y": 0.7805}, {"x": 0.2685, "y": 0.7927}, {"x": 0.2816, "y": 0.8293}, {"x": 0.3186, "y": 0.8415}, {"x": 0.321, "y": 0.8659}, {"x": 0.3234, "y": 0.878}, {"x": 0.3484, "y": 0.9024}, {"x": 0.4606, "y": 0.9146}, {"x": 0.4654, "y": 0.939}, {"x": 0.543, "y": 0.9512}, {"x": 0.6372, "y": 0.9756}, {"x": 0.7506, "y": 0.9878}, {"x": 1.0, "y": 1.0}], "pr": [{"x": 0.0, "y": 1.0}, {"x": 0.0732, "y": 0.3}, {"x": 0.1463, "y": 0.2927}, {"x": 0.2683, "y": 0.3548}, {"x": 0.3902, "y": 0.3855}, {"x": 0.4756, "y": 0.375}, {"x": 0.5732, "y": 0.376}, {"x": 0.622, "y": 0.3493}, {"x": 0.6463, "y": 0.3174}, {"x": 0.6829, "y": 0.2995}, {"x": 0.7195, "y": 0.2837}, {"x": 0.7439, "y": 0.2664}, {"x": 0.7561, "y": 0.248}, {"x": 0.7683, "y": 0.2325}, {"x": 0.8171, "y": 0.2295}, {"x": 0.8293, "y": 0.2173}, {"x": 0.8415, "y": 0.2066}, {"x": 0.8902, "y": 0.2056}, {"x": 0.9024, "y": 0.1973}, {"x": 0.9146, "y": 0.1894}, {"x": 0.9146, "y": 0.1799}, {"x": 0.9146, "y": 0.1712}, {"x": 0.9146, "y": 0.1634}, {"x": 0.939, "y": 0.1604}, {"x": 0.939, "y": 0.1537}, {"x": 0.9512, "y": 0.1494}, {"x": 0.9634, "y": 0.1455}, {"x": 0.9634, "y": 0.1403}, {"x": 0.9634, "y": 0.1353}, {"x": 0.9634, "y": 0.1306}, {"x": 0.9756, "y": 0.1278}, {"x": 0.9878, "y": 0.1252}, {"x": 0.9878, "y": 0.1213}, {"x": 0.9878, "y": 0.1176}, {"x": 0.9878, "y": 0.1141}, {"x": 1.0, "y": 0.1122}, {"x": 1.0, "y": 0.1092}, {"x": 1.0, "y": 0.1062}, {"x": 1.0, "y": 0.1034}, {"x": 1.0, "y": 0.1007}, {"x": 1.0, "y": 0.0982}, {"x": 1.0, "y": 0.0958}, {"x": 1.0, "y": 0.0935}, {"x": 1.0, "y": 0.0913}, {"x": 1.0, "y": 0.0891}]}, "Logistic Regression (Balanced)": {"roc": [{"x": 0.0, "y": 0.0}, {"x": 0.0, "y": 0.061}, {"x": 0.0012, "y": 0.0854}, {"x": 0.0024, "y": 0.0976}, {"x": 0.0048, "y": 0.1341}, {"x": 0.0084, "y": 0.1585}, {"x": 0.0095, "y": 0.1707}, {"x": 0.0227, "y": 0.2073}, {"x": 0.0239, "y": 0.2195}, {"x": 0.031, "y": 0.2439}, {"x": 0.0322, "y": 0.2683}, {"x": 0.0334, "y": 0.2927}, {"x": 0.037, "y": 0.3659}, {"x": 0.0394, "y": 0.3902}, {"x": 0.0406, "y": 0.4268}, {"x": 0.0418, "y": 0.4634}, {"x": 0.043, "y": 0.4756}, {"x": 0.0453, "y": 0.5}, {"x": 0.0477, "y": 0.5122}, {"x": 0.0549, "y": 0.5244}, {"x": 0.0597, "y": 0.5488}, {"x": 0.0621, "y": 0.561}, {"x": 0.0656, "y": 0.5976}, {"x": 0.0704, "y": 0.6098}, {"x": 0.0716, "y": 0.6341}, {"x": 0.0764, "y": 0.6707}, {"x": 0.0776, "y": 0.6951}, {"x": 0.0943, "y": 0.7195}, {"x": 0.1002, "y": 0.7317}, {"x": 0.1014, "y": 0.7683}, {"x": 0.1062, "y": 0.7805}, {"x": 0.1205, "y": 0.7927}, {"x": 0.148, "y": 0.8049}, {"x": 0.1599, "y": 0.8171}, {"x": 0.1671, "y": 0.8293}, {"x": 0.1718, "y": 0.8537}, {"x": 0.1802, "y": 0.878}, {"x": 0.1874, "y": 0.8902}, {"x": 0.1909, "y": 0.9268}, {"x": 0.1957, "y": 0.939}, {"x": 0.2017, "y": 0.9512}, {"x": 0.2053, "y": 0.9634}, {"x": 0.2064, "y": 0.9756}, {"x": 0.2291, "y": 0.9878}, {"x": 1.0, "y": 1.0}], "pr": [{"x": 0.0, "y": 1.0}, {"x": 0.1585, "y": 0.65}, {"x": 0.2439, "y": 0.4878}, {"x": 0.378, "y": 0.5}, {"x": 0.5122, "y": 0.506}, {"x": 0.5976, "y": 0.4712}, {"x": 0.6951, "y": 0.456}, {"x": 0.7439, "y": 0.4178}, {"x": 0.7927, "y": 0.3892}, {"x": 0.8049, "y": 0.3511}, {"x": 0.8415, "y": 0.3301}, {"x": 0.8902, "y": 0.3174}, {"x": 0.9512, "y": 0.312}, {"x": 0.9756, "y": 0.2952}, {"x": 1.0, "y": 0.2808}, {"x": 1.0, "y": 0.262}, {"x": 1.0, "y": 0.2455}, {"x": 1.0, "y": 0.231}, {"x": 1.0, "y": 0.2181}, {"x": 1.0, "y": 0.2065}, {"x": 1.0, "y": 0.1962}, {"x": 1.0, "y": 0.1868}, {"x": 1.0, "y": 0.1783}, {"x": 1.0, "y": 0.1708}, {"x": 1.0, "y": 0.1637}, {"x": 1.0, "y": 0.1571}, {"x": 1.0, "y": 0.151}, {"x": 1.0, "y": 0.1454}, {"x": 1.0, "y": 0.1402}, {"x": 1.0, "y": 0.1353}, {"x": 1.0, "y": 0.1308}, {"x": 1.0, "y": 0.1265}, {"x": 1.0, "y": 0.1226}, {"x": 1.0, "y": 0.1188}, {"x": 1.0, "y": 0.1155}, {"x": 1.0, "y": 0.1122}, {"x": 1.0, "y": 0.109}, {"x": 1.0, "y": 0.1061}, {"x": 1.0, "y": 0.1033}, {"x": 1.0, "y": 0.1006}, {"x": 1.0, "y": 0.0981}, {"x": 1.0, "y": 0.0957}, {"x": 1.0, "y": 0.0934}, {"x": 1.0, "y": 0.0912}, {"x": 1.0, "y": 0.0891}]}, "Random Forest Classifier": {"roc": [{"x": 0.0, "y": 0.0}, {"x": 0.0, "y": 0.0122}, {"x": 0.0, "y": 0.5854}, {"x": 0.0012, "y": 0.5854}, {"x": 0.0012, "y": 0.6098}, {"x": 0.0024, "y": 0.6585}, {"x": 0.0036, "y": 0.6585}, {"x": 0.0036, "y": 0.7317}, {"x": 0.0084, "y": 0.7317}, {"x": 0.0095, "y": 0.7561}, {"x": 0.0095, "y": 0.7683}, {"x": 0.0119, "y": 0.7683}, {"x": 0.0119, "y": 0.7805}, {"x": 0.0131, "y": 0.7805}, {"x": 0.0143, "y": 0.7927}, {"x": 0.0143, "y": 0.8049}, {"x": 0.0167, "y": 0.8049}, {"x": 0.0167, "y": 0.8415}, {"x": 0.0227, "y": 0.8537}, {"x": 0.0239, "y": 0.8537}, {"x": 0.0239, "y": 0.8659}, {"x": 0.0251, "y": 0.8659}, {"x": 0.0274, "y": 0.878}, {"x": 0.0274, "y": 0.9024}, {"x": 0.031, "y": 0.9024}, {"x": 0.031, "y": 0.9146}, {"x": 0.0358, "y": 0.9146}, {"x": 0.0394, "y": 0.9268}, {"x": 0.0394, "y": 0.939}, {"x": 0.0442, "y": 0.939}, {"x": 0.0442, "y": 0.9512}, {"x": 0.0501, "y": 0.9634}, {"x": 0.0513, "y": 0.9634}, {"x": 0.0513, "y": 0.9756}, {"x": 0.1002, "y": 0.9756}, {"x": 0.1002, "y": 0.9878}, {"x": 0.1265, "y": 1.0}, {"x": 0.932, "y": 1.0}, {"x": 0.9368, "y": 1.0}, {"x": 0.9379, "y": 1.0}, {"x": 0.9451, "y": 1.0}, {"x": 0.9511, "y": 1.0}, {"x": 0.9535, "y": 1.0}, {"x": 0.9547, "y": 1.0}, {"x": 1.0, "y": 1.0}], "pr": [{"x": 0.0, "y": 1.0}, {"x": 0.2317, "y": 1.0}, {"x": 0.4756, "y": 1.0}, {"x": 0.6829, "y": 0.9492}, {"x": 0.8049, "y": 0.8354}, {"x": 0.9024, "y": 0.7475}, {"x": 0.9512, "y": 0.6555}, {"x": 0.9756, "y": 0.5755}, {"x": 0.9756, "y": 0.5031}, {"x": 0.9878, "y": 0.4525}, {"x": 1.0, "y": 0.4121}, {"x": 1.0, "y": 0.3744}, {"x": 1.0, "y": 0.3445}, {"x": 1.0, "y": 0.3178}, {"x": 1.0, "y": 0.295}, {"x": 1.0, "y": 0.2752}, {"x": 1.0, "y": 0.2579}, {"x": 1.0, "y": 0.2426}, {"x": 1.0, "y": 0.2291}, {"x": 1.0, "y": 0.2169}, {"x": 1.0, "y": 0.206}, {"x": 1.0, "y": 0.1962}, {"x": 1.0, "y": 0.1872}, {"x": 1.0, "y": 0.1794}, {"x": 1.0, "y": 0.1719}, {"x": 1.0, "y": 0.165}, {"x": 1.0, "y": 0.1586}, {"x": 1.0, "y": 0.1527}, {"x": 1.0, "y": 0.1472}, {"x": 1.0, "y": 0.1421}, {"x": 1.0, "y": 0.1374}, {"x": 1.0, "y": 0.1329}, {"x": 1.0, "y": 0.1287}, {"x": 1.0, "y": 0.1248}, {"x": 1.0, "y": 0.1213}, {"x": 1.0, "y": 0.1178}, {"x": 1.0, "y": 0.1145}, {"x": 1.0, "y": 0.1114}, {"x": 1.0, "y": 0.1085}, {"x": 1.0, "y": 0.1057}, {"x": 1.0, "y": 0.103}, {"x": 1.0, "y": 0.1005}, {"x": 1.0, "y": 0.0981}, {"x": 1.0, "y": 0.0958}, {"x": 1.0, "y": 0.0891}]}, "HistGradientBoosting (Champion)": {"roc": [{"x": 0.0, "y": 0.0}, {"x": 0.0, "y": 0.0122}, {"x": 0.0, "y": 0.3171}, {"x": 0.0012, "y": 0.3171}, {"x": 0.0012, "y": 0.4634}, {"x": 0.0024, "y": 0.4634}, {"x": 0.0024, "y": 0.5854}, {"x": 0.0036, "y": 0.5854}, {"x": 0.0036, "y": 0.7073}, {"x": 0.0048, "y": 0.7073}, {"x": 0.0048, "y": 0.7805}, {"x": 0.006, "y": 0.7805}, {"x": 0.006, "y": 0.8171}, {"x": 0.0072, "y": 0.8171}, {"x": 0.0072, "y": 0.8537}, {"x": 0.0084, "y": 0.8537}, {"x": 0.0084, "y": 0.8659}, {"x": 0.0107, "y": 0.8659}, {"x": 0.0107, "y": 0.878}, {"x": 0.0143, "y": 0.878}, {"x": 0.0143, "y": 0.8902}, {"x": 0.0167, "y": 0.8902}, {"x": 0.0167, "y": 0.9024}, {"x": 0.0191, "y": 0.9024}, {"x": 0.0191, "y": 0.9146}, {"x": 0.0227, "y": 0.9146}, {"x": 0.0227, "y": 0.9268}, {"x": 0.0358, "y": 0.9268}, {"x": 0.0358, "y": 0.939}, {"x": 0.0382, "y": 0.939}, {"x": 0.0382, "y": 0.9512}, {"x": 0.0477, "y": 0.9512}, {"x": 0.0477, "y": 0.9634}, {"x": 0.068, "y": 0.9634}, {"x": 0.068, "y": 0.9756}, {"x": 0.0716, "y": 0.9756}, {"x": 0.0716, "y": 0.9878}, {"x": 0.1146, "y": 0.9878}, {"x": 0.1146, "y": 1.0}, {"x": 1.0, "y": 1.0}], "pr": [{"x": 0.0, "y": 1.0}, {"x": 0.2439, "y": 1.0}, {"x": 0.4756, "y": 0.9512}, {"x": 0.7073, "y": 0.9355}, {"x": 0.878, "y": 0.8675}, {"x": 0.9268, "y": 0.7308}, {"x": 0.9634, "y": 0.632}, {"x": 0.9878, "y": 0.5548}, {"x": 0.9878, "y": 0.485}, {"x": 1.0, "y": 0.4362}, {"x": 1.0, "y": 0.3923}, {"x": 1.0, "y": 0.3565}, {"x": 1.0, "y": 0.328}, {"x": 1.0, "y": 0.3026}, {"x": 1.0, "y": 0.2808}, {"x": 1.0, "y": 0.262}, {"x": 1.0, "y": 0.2455}, {"x": 1.0, "y": 0.231}, {"x": 1.0, "y": 0.2181}, {"x": 1.0, "y": 0.2065}, {"x": 1.0, "y": 0.1962}, {"x": 1.0, "y": 0.1868}, {"x": 1.0, "y": 0.1783}, {"x": 1.0, "y": 0.1708}, {"x": 1.0, "y": 0.1637}, {"x": 1.0, "y": 0.1571}, {"x": 1.0, "y": 0.151}, {"x": 1.0, "y": 0.1454}, {"x": 1.0, "y": 0.1402}, {"x": 1.0, "y": 0.1353}, {"x": 1.0, "y": 0.1308}, {"x": 1.0, "y": 0.1265}, {"x": 1.0, "y": 0.1226}, {"x": 1.0, "y": 0.1188}, {"x": 1.0, "y": 0.1155}, {"x": 1.0, "y": 0.1122}, {"x": 1.0, "y": 0.109}, {"x": 1.0, "y": 0.1061}, {"x": 1.0, "y": 0.1033}, {"x": 1.0, "y": 0.1006}, {"x": 1.0, "y": 0.0981}, {"x": 1.0, "y": 0.0957}, {"x": 1.0, "y": 0.0934}, {"x": 1.0, "y": 0.0912}, {"x": 1.0, "y": 0.0891}]}}, "feature_importance": [{"feature": "action_type", "importance_mean": 0.3354, "importance_std": 0.0519}, {"feature": "sod_rule_score", "importance_mean": 0.1408, "importance_std": 0.0273}, {"feature": "records_exported_log", "importance_mean": 0.0977, "importance_std": 0.0182}, {"feature": "privilege_level_delta", "importance_mean": 0.0953, "importance_std": 0.0094}, {"feature": "entitlement_count", "importance_mean": 0.0674, "importance_std": 0.0154}, {"feature": "days_since_last_review", "importance_mean": 0.0557, "importance_std": 0.0129}, {"feature": "department", "importance_mean": 0.0536, "importance_std": 0.0069}, {"feature": "dormancy_days", "importance_mean": 0.051, "importance_std": 0.0098}, {"feature": "failed_auth_24h", "importance_mean": 0.0344, "importance_std": 0.0082}, {"feature": "asset_criticality", "importance_mean": 0.0298, "importance_std": 0.0085}, {"feature": "hour_cos", "importance_mean": 0.027, "importance_std": 0.0051}, {"feature": "system_name", "importance_mean": 0.0248, "importance_std": 0.0069}, {"feature": "peer_group_volume_zscore", "importance_mean": 0.0243, "importance_std": 0.0079}, {"feature": "has_change_ticket", "importance_mean": 0.0227, "importance_std": 0.0087}, {"feature": "hour_sin", "importance_mean": 0.0072, "importance_std": 0.0022}, {"feature": "is_off_hours", "importance_mean": 0.0026, "importance_std": 0.0011}, {"feature": "cross_dept_access", "importance_mean": 0.0005, "importance_std": 0.0007}, {"feature": "external_ai_endpoint_flag", "importance_mean": -0.0107, "importance_std": 0.0033}], "error_analysis": {"test_size": 920, "test_violations": 82, "false_positives_count": 44, "false_negatives_count": 3, "fp_by_department": {"IT Infrastructure": 15, "Risk & Compliance": 10, "Treasury & Markets": 7, "Finance & Accounting": 7, "Operations": 3, "Asset Management": 2}, "fn_by_violation_type": {"privilege_creep": 1, "dormant_account_abuse": 1, "shadow_ai_leakage": 1}, "fp_sample_causes": ["7/44 FPs had off-hours activity despite valid ITSM change tickets", "5/44 FPs were Risk & Compliance bulk exports (z-score=0.88)", "7/44 FPs exhibited temporary cross-dept SoD score >= 0.45"], "fn_sample_causes": ["Missed archetypes: privilege_creep (1), dormant_account_abuse (1); median ML prob = 0.197", "Stealth profile: median exported=505 records, median SoD=0.07, ticket_present=2/3"]}, "champion_threshold": 0.33}, "rag_evaluation": {"num_queries": 24, "recall_at_1": 0.9167, "recall_at_3": 1.0, "mrr": 0.9514, "ablation": [{"mode": "TF-IDF Cosine Only", "recall_at_1": 0.8333, "recall_at_3": 0.9583, "mrr": 0.8889}, {"mode": "BM25 Lexical Only", "recall_at_1": 0.9167, "recall_at_3": 1.0, "mrr": 0.9514}, {"mode": "Hybrid (0.55 TF-IDF + 0.45 BM25)", "recall_at_1": 0.9167, "recall_at_3": 1.0, "mrr": 0.9514}], "sample_evaluations": [{"query": "staff accumulated extra permissions across departments over several months without manager sign-off", "expected": ["HKMA-TMG1-4.1", "ISO27001-A5.15", "ISO27001-A5.18"], "predicted_top3": ["HKMA-TMG1-4.1", "ISO27001-A5.3", "HKMA-TMG1-6.1"], "hit_at_3": true}, {"query": "same user can submit a wire transfer and approve the settlement in SWIFT", "expected": ["HKMA-TMG1-4.3", "ISO27001-A5.3"], "predicted_top3": ["ISO27001-A8.2", "ISO27001-A5.18", "HKMA-TMG1-4.3"], "hit_at_3": true}, {"query": "engineer pushed firewall and IAM policy edits to live servers without any ServiceNow approval", "expected": ["HKMA-TMG1-5.2", "ISO27001-A8.32"], "predicted_top3": ["ISO27001-A8.32", "HKMA-TMG1-4.3", "HKMA-TMG1-5.2"], "hit_at_3": true}, {"query": "large customer identity spreadsheet downloaded at 3am outside normal Hong Kong office hours", "expected": ["HKMA-TMG1-6.1", "ISO27001-A8.12"], "predicted_top3": ["HKMA-TMG1-6.1", "HKMA-TMG1-4.3", "HKMA-TMG1-7.4"], "hit_at_3": true}, {"query": "former vendor login remained active for four months and suddenly signed in with password errors", "expected": ["HKMA-CRAF-3.2", "ISO27001-A5.18"], "predicted_top3": ["HKMA-TMG1-4.1", "HKMA-CRAF-3.2", "ISO27001-A8.15"], "hit_at_3": true}]}, "controls": [{"control_id": "HKMA-TMG1-4.1", "framework": "HKMA SPM TM-G-1", "domain": "Access & Identity", "title": "Least Privilege & Periodic Access Recertification", "description": "Authorized institutions must enforce least-privilege access across core financial ledgers and conduct periodic entitlement recertification to prevent privilege creep across departments.", "keywords": ["privilege creep", "entitlement", "recertification", "least privilege", "cross-department", "access review"], "violation_types": ["privilege_creep"], "remediation_steps": ["Revoke uncertified cross-department entitlements exceeding role baseline.", "Enforce automated 90-day IAM access recertification workflows signed off by line managers.", "Implement role-based entitlement ceilings in the Production IAM Console."], "estimated_effort_hours": 16, "regulatory_weight": 0.95}, {"control_id": "HKMA-TMG1-4.3", "framework": "HKMA SPM TM-G-1", "domain": "Access & Identity", "title": "Segregation of Duties (SoD) in Payment & Ledger Operations", "description": "Conflicting duties such as payment initiation and approval, or software development and production deployment, must be strictly segregated across independent personnel.", "keywords": ["segregation of duties", "sod", "conflict", "approver", "requester", "payment", "deployment"], "violation_types": ["sod_conflict"], "remediation_steps": ["Block dual-role entitlement assignments via preventive SoD policy rules in IAM.", "Require independent second-line approval for SWIFT Payment Gateway and Core Portfolio Ledger transactions.", "Audit all emergency break-glass overrides within 24 hours."], "estimated_effort_hours": 24, "regulatory_weight": 1.0}, {"control_id": "HKMA-TMG1-5.2", "framework": "HKMA SPM TM-G-1", "domain": "Change & Operations", "title": "Formal Production Change Management & Ticket Traceability", "description": "All configuration, schema, and IAM policy changes in production systems must be backed by an approved ITSM change ticket, peer review, and rollback plan.", "keywords": ["change ticket", "unapproved change", "production", "configuration", "itsm", "deployment"], "violation_types": ["unapproved_prod_change"], "remediation_steps": ["Enforce CI/CD and IAM pipeline gates requiring a valid approved ITSM change ticket ID.", "Revert unauthorized production policy modifications and verify configuration checksums.", "Conduct post-incident review with IT Operations and Change Advisory Board."], "estimated_effort_hours": 18, "regulatory_weight": 0.92}, {"control_id": "HKMA-TMG1-6.1", "framework": "HKMA SPM TM-G-1", "domain": "Data Protection", "title": "Sensitive Client & Financial Data Exfiltration Prevention", "description": "Bulk exports of customer KYC records, portfolio holdings, or treasury positions outside business hours require DLP inspection, business justification, and automated alerting.", "keywords": ["exfiltration", "bulk export", "off hours", "kyc", "data leakage", "dlp", "records exported"], "violation_types": ["off_hours_exfiltration"], "remediation_steps": ["Throttle bulk query exports on Client KYC Vault and Core Portfolio Ledger outside 08:00-20:00 HKT.", "Require step-up MFA and manager pre-authorization for exports exceeding peer-group baseline.", "Inspect endpoint DLP logs and quarantine anomalous export destinations."], "estimated_effort_hours": 20, "regulatory_weight": 0.98}, {"control_id": "HKMA-CRAF-3.2", "framework": "HKMA C-RAF", "domain": "Monitoring & Audit", "title": "Dormant Account Lifecycle & Contractor Credential Deprovisioning", "description": "Dormant, terminated, or inactive contractor accounts must be automatically suspended after 30 days of inactivity and monitored for unauthorized reactivation.", "keywords": ["dormant", "inactive", "contractor", "reactivated", "deprovisioning", "stale account"], "violation_types": ["dormant_account_abuse"], "remediation_steps": ["Disable accounts exceeding 30 days of inactivity automatically via HR-to-IAM lifecycle sync.", "Rotate all shared or contractor service credentials and revoke active session tokens.", "Place reactivated dormant accounts under 14-day heightened SIEM watch."], "estimated_effort_hours": 12, "regulatory_weight": 0.88}, {"control_id": "HKMA-TMG1-7.4", "framework": "HKMA SPM TM-G-1", "domain": "AI & Third-Party Governance", "title": "Third-Party Cloud & Unapproved External AI Endpoint Governance", "description": "Transmission of proprietary financial models or confidential client data to unapproved external generative AI APIs violates third-party outsourcing and data residency controls.", "keywords": ["shadow ai", "external ai", "llm", "generative ai", "third-party", "api upload", "data residency"], "violation_types": ["shadow_ai_leakage"], "remediation_steps": ["Block egress to unapproved external LLM endpoints at the corporate CASB/proxy layer.", "Provision an approved internal enterprise AI gateway with PII redaction and audit logging.", "Conduct mandatory AI acceptable-use retraining for affected departments."], "estimated_effort_hours": 22, "regulatory_weight": 0.94}, {"control_id": "ISO27001-A5.15", "framework": "ISO/IEC 27001:2022", "domain": "Access & Identity", "title": "Access Control Policy & Need-to-Know Enforcement", "description": "Rules to control physical and logical access to information and associated assets shall be established based on business and information security requirements.", "keywords": ["access control", "need to know", "cross department", "authorization", "entitlements"], "violation_types": ["privilege_creep", "dormant_account_abuse"], "remediation_steps": ["Align IAM entitlement matrices with departmental job-function catalogs.", "Review cross-departmental access grants quarterly with asset owners."], "estimated_effort_hours": 14, "regulatory_weight": 0.85}, {"control_id": "ISO27001-A5.18", "framework": "ISO/IEC 27001:2022", "domain": "Access & Identity", "title": "Access Rights Provisioning, Review & Revocation", "description": "Access rights to information and other associated assets shall be provisioned, reviewed, modified and removed in accordance with the organization's access control topic-specific policy.", "keywords": ["access rights", "revocation", "provisioning", "stale", "dormant", "review"], "violation_types": ["privilege_creep", "dormant_account_abuse"], "remediation_steps": ["Automate deprovisioning triggers upon role transfer or project offboarding.", "Maintain immutable evidence logs of quarterly access recertification campaigns."], "estimated_effort_hours": 14, "regulatory_weight": 0.87}, {"control_id": "ISO27001-A8.2", "framework": "ISO/IEC 27001:2022", "domain": "Access & Identity", "title": "Privileged Access Rights & Elevated Session Governance", "description": "The allocation and use of privileged access rights shall be restricted and managed through a Privileged Access Management (PAM) vault with just-in-time elevation.", "keywords": ["privileged access", "elevation", "admin", "pam", "root", "iam console", "privilege delta"], "violation_types": ["privilege_creep", "sod_conflict", "unapproved_prod_change"], "remediation_steps": ["Migrate standing administrative privileges to Just-In-Time (JIT) PAM checkout.", "Enable full session recording for Production IAM Console and SWIFT Payment Gateway."], "estimated_effort_hours": 26, "regulatory_weight": 0.96}, {"control_id": "ISO27001-A8.12", "framework": "ISO/IEC 27001:2022", "domain": "Data Protection", "title": "Data Leakage Prevention (DLP)", "description": "Data leakage prevention measures shall be applied to systems, networks and any other devices that process, store or transmit sensitive information.", "keywords": ["dlp", "data leakage", "export", "exfiltration", "upload", "sensitive data"], "violation_types": ["off_hours_exfiltration", "shadow_ai_leakage"], "remediation_steps": ["Deploy content-aware DLP rules detecting KYC IDs, account numbers, and portfolio CSVs.", "Enforce encryption and watermarking on authorized regulatory data exports."], "estimated_effort_hours": 20, "regulatory_weight": 0.93}, {"control_id": "ISO27001-A8.15", "framework": "ISO/IEC 27001:2022", "domain": "Monitoring & Audit", "title": "Immutable Event Logging & Anomaly Correlation", "description": "Logs that record activities, exceptions, faults and other relevant events shall be produced, stored, protected and analyzed to detect anomalous authentication and access behavior.", "keywords": ["logging", "audit trail", "siem", "failed login", "anomaly", "correlation", "monitoring"], "violation_types": ["off_hours_exfiltration", "dormant_account_abuse", "unapproved_prod_change"], "remediation_steps": ["Forward all IAM, database, and AI gateway telemetry to tamper-evident WORM log storage.", "Tune behavioral anomaly thresholds against peer-group baselines to reduce alert fatigue."], "estimated_effort_hours": 15, "regulatory_weight": 0.9}, {"control_id": "ISO27001-A8.32", "framework": "ISO/IEC 27001:2022", "domain": "Change & Operations", "title": "Change Management for Information Processing Facilities", "description": "Changes to information processing facilities and information systems shall be subject to formal change management procedures including impact assessment and authorization.", "keywords": ["change management", "change ticket", "production change", "authorization", "rollback"], "violation_types": ["unapproved_prod_change", "sod_conflict"], "remediation_steps": ["Require dual-control verification linking Git/IaC commits to approved ServiceNow/Jira change tickets.", "Block direct console edits in production except under audited emergency break-glass."], "estimated_effort_hours": 18, "regulatory_weight": 0.91}, {"control_id": "ISO27001-A5.3", "framework": "ISO/IEC 27001:2022", "domain": "Change & Operations", "title": "Segregation of Conflicting Duties", "description": "Conflicting duties and conflicting areas of responsibility shall be segregated to reduce opportunities for unauthorized or unintentional modification or misuse of assets.", "keywords": ["segregation", "conflicting duties", "sod", "fraud", "maker checker"], "violation_types": ["sod_conflict"], "remediation_steps": ["Enforce maker-checker separation across financial ledger postings and IAM role approvals.", "Run weekly automated SoD conflict matrix scans across all 120+ staff accounts."], "estimated_effort_hours": 20, "regulatory_weight": 0.95}, {"control_id": "ISO27001-A8.24", "framework": "ISO/IEC 27001:2022", "domain": "Data Protection", "title": "Use of Cryptography & Tokenization for Data in Transit", "description": "Rules for the effective use of cryptography, including cryptographic key management and data tokenization before external processing, shall be defined and implemented.", "keywords": ["encryption", "tokenization", "data in transit", "external endpoint", "pii masking"], "violation_types": ["shadow_ai_leakage", "off_hours_exfiltration"], "remediation_steps": ["Apply automated PII tokenization before any internal analytics dataset leaves secure enclaves.", "Enforce TLS 1.3 and mutual authentication for internal data lake APIs."], "estimated_effort_hours": 16, "regulatory_weight": 0.86}, {"control_id": "NIST-AI-GOVERN-1.2", "framework": "NIST AI RMF 1.0", "domain": "AI & Third-Party Governance", "title": "AI Governance Accountability & Shadow AI Inventory", "description": "The characteristics and use of third-party AI systems and external LLM endpoints are inventoried, approved, and governed under organizational risk tolerances.", "keywords": ["shadow ai", "ai governance", "llm", "inventory", "unapproved model", "external ai"], "violation_types": ["shadow_ai_leakage"], "remediation_steps": ["Maintain a centralized registry of approved foundation models and enterprise AI sandboxes.", "Configure DNS/proxy alerts for unauthorized external AI API domains."], "estimated_effort_hours": 18, "regulatory_weight": 0.92}, {"control_id": "NIST-AI-MAP-1.5", "framework": "NIST AI RMF 1.0", "domain": "AI & Third-Party Governance", "title": "Data Privacy & Confidentiality Mapping in AI Workflows", "description": "Organizational risk tolerances and client confidentiality boundaries are mapped prior to feeding corporate datasets into generative or predictive AI pipelines.", "keywords": ["ai privacy", "confidentiality", "dataset upload", "kyc", "llm prompt", "training data"], "violation_types": ["shadow_ai_leakage"], "remediation_steps": ["Implement pre-prompt PII/client-ID scrubbing middleware in the AI Research Sandbox.", "Classify all datasets by sensitivity tier before granting AI Sandbox read permissions."], "estimated_effort_hours": 16, "regulatory_weight": 0.89}, {"control_id": "NIST-AI-MEASURE-2.6", "framework": "NIST AI RMF 1.0", "domain": "Monitoring & Audit", "title": "Continuous Evaluation of Automated Detection & Alert Fatigue", "description": "AI-based security and audit monitoring systems are regularly evaluated for precision, recall, false-positive burden, and error archetypes across business units.", "keywords": ["evaluation", "false positive", "recall", "precision", "drift", "ai monitoring", "audit model"], "violation_types": ["privilege_creep", "off_hours_exfiltration"], "remediation_steps": ["Track quarterly PR-AUC and false-positive rate per department for audit anomaly models.", "Feed human auditor triage decisions back into threshold calibration reviews."], "estimated_effort_hours": 12, "regulatory_weight": 0.84}, {"control_id": "NIST-AI-MANAGE-2.2", "framework": "NIST AI RMF 1.0", "domain": "Monitoring & Audit", "title": "Human-in-the-Loop Oversight & Auditable Escalation", "description": "Mechanisms are maintained to supersede, disengage, or escalate AI-flagged governance alerts through documented human-in-the-loop review workflows.", "keywords": ["human in the loop", "escalation", "triage", "audit review", "override", "ciso"], "violation_types": ["sod_conflict", "unapproved_prod_change", "shadow_ai_leakage"], "remediation_steps": ["Preserve immutable audit review logs capturing reviewer identity, rationale, and disposition.", "Define SLA escalation paths for Critical (>=80) findings to Information Security & Compliance."], "estimated_effort_hours": 14, "regulatory_weight": 0.9}], "default_simulation": {"alert_threshold": 0.33, "budget_hours": 160, "domain_focus": "All", "cohort_label": "Holdout Test Cohort (Annualized to 90-Day Quarter)", "flagged_alerts": 481, "true_positives_caught": 309, "false_positives": 172, "missed_violations": 12, "recall": 0.9634, "precision": 0.6423, "hours_required": 168.3, "capacity_coverage_pct": 95.1, "risk_reduction_pct": 91.5, "residual_critical_findings": 0, "avoided_exposure_hkd": 5420500, "residual_exposure_hkd": 518000}, "simulation_corpus": [[0.0196, 0, 3], [0.0149, 0, 4], [0.8753, 1, 2], [0.0068, 0, 4], [0.0004, 0, 4], [0.0089, 0, 2], [0.001, 0, 0], [0.0003, 0, 4], [0.0012, 0, 2], [0.0055, 0, 2], [0.0012, 0, 4], [0.0003, 0, 1], [0.0747, 0, 4], [0.0238, 0, 4], [0.0005, 0, 4], [0.0982, 0, 1], [0.0219, 0, 2], [0.0005, 0, 4], [0.0022, 0, 4], [0.0007, 0, 2], [0.0007, 0, 4], [0.0031, 0, 2], [0.0368, 0, 2], [0.0133, 0, 2], [0.9715, 1, 1], [0.0027, 0, 2], [0.0004, 0, 4], [0.7964, 1, 3], [0.0011, 0, 4], [0.0816, 0, 4], [0.0003, 0, 4], [0.0012, 0, 0], [0.0009, 0, 4], [0.0577, 0, 2], [0.0039, 0, 4], [0.0024, 0, 2], [0.0008, 0, 2], [0.0117, 0, 0], [0.0023, 0, 4], [0.0005, 0, 2], [0.0004, 0, 4], [0.2362, 0, 1], [0.0779, 0, 4], [0.0163, 0, 0], [0.005, 0, 0], [0.0107, 0, 4], [0.0298, 0, 2], [0.0008, 0, 4], [0.9831, 1, 0], [0.0117, 0, 0], [0.0221, 0, 0], [0.0012, 0, 4], [0.0177, 0, 0], [0.9966, 1, 0], [0.0002, 0, 4], [0.0082, 0, 2], [0.0209, 0, 0], [0.0036, 0, 4], [0.0207, 0, 0], [0.3724, 0, 3], [0.0843, 0, 2], [0.0342, 0, 3], [0.003, 0, 2], [0.0013, 0, 4], [0.0026, 0, 4], [0.9729, 1, 1], [0.0006, 0, 4], [0.0208, 0, 0], [0.0136, 0, 0], [0.0051, 0, 3], [0.0009, 0, 4], [0.0009, 0, 4], [0.0006, 0, 2], [0.0025, 0, 4], [0.0005, 0, 4], [0.021, 0, 0], [0.1649, 0, 2], [0.0026, 0, 0], [0.0015, 0, 1], [0.0012, 0, 4], [0.0029, 0, 4], [0.0436, 0, 0], [0.0505, 0, 0], [0.0293, 0, 4], [0.2206, 0, 0], [0.0112, 0, 1], [0.0579, 0, 0], [0.011, 0, 4], [0.0006, 0, 0], [0.0005, 0, 4], [0.0233, 0, 2], [0.3169, 0, 0], [0.7552, 1, 2], [0.0031, 0, 0], [0.8589, 1, 0], [0.0005, 0, 2], [0.0014, 0, 4], [0.0037, 0, 4], [0.0012, 0, 4], [0.9233, 1, 2], [0.0392, 0, 4], [0.0092, 0, 4], [0.0011, 0, 2], [0.9771, 1, 2], [0.0027, 0, 4], [0.4, 1, 0], [0.0024, 0, 2], [0.183, 0, 2], [0.0247, 0, 1], [0.0026, 0, 2], [0.0114, 0, 2], [0.0128, 0, 1], [0.0008, 0, 4], [0.6481, 0, 1], [0.0012, 0, 4], [0.0004, 0, 4], [0.0041, 0, 4], [0.001, 0, 4], [0.0221, 0, 0], [0.0033, 0, 4], [0.0065, 0, 4], [0.0007, 0, 2], [0.0003, 0, 4], [0.0947, 0, 1], [0.0045, 0, 2], [0.0009, 0, 0], [0.0221, 0, 2], [0.0872, 0, 2], [0.0018, 0, 1], [0.0097, 0, 4], [0.0006, 0, 0], [0.0011, 0, 4], [0.007, 0, 4], [0.0004, 0, 4], [0.9937, 1, 0], [0.0004, 0, 4], [0.001, 0, 2], [0.0036, 0, 4], [0.9065, 1, 1], [0.002, 0, 2], [0.0257, 0, 0], [0.0003, 0, 1], [0.0082, 0, 0], [0.2231, 0, 0], [0.0008, 0, 4], [0.016, 0, 0], [0.34, 0, 1], [0.0153, 0, 2], [0.0005, 0, 4], [0.0232, 0, 2], [0.0033, 0, 1], [0.0039, 0, 0], [0.0141, 0, 2], [0.869, 1, 2], [0.0036, 0, 4], [0.0053, 0, 1], [0.0026, 0, 2], [0.0044, 0, 0], [0.0063, 0, 4], [0.0016, 0, 2], [0.8417, 1, 1], [0.0005, 0, 4], [0.0099, 0, 0], [0.976, 1, 4], [0.029, 0, 2], [0.0348, 0, 1], [0.0006, 0, 4], [0.0025, 0, 0], [0.002, 0, 4], [0.0013, 0, 4], [0.016, 0, 4], [0.0007, 0, 0], [0.0009, 0, 2], [0.0329, 0, 2], [0.0055, 0, 0], [0.1968, 1, 0], [0.0013, 0, 1], [0.0034, 0, 4], [0.0056, 0, 4], [0.0018, 0, 2], [0.002, 0, 2], [0.001, 0, 4], [0.0008, 0, 4], [0.0012, 0, 0], [0.0013, 0, 2], [0.0053, 0, 2], [0.0039, 0, 4], [0.0077, 0, 4], [0.0085, 0, 2], [0.992, 1, 2], [0.6205, 0, 3], [0.0065, 0, 0], [0.0448, 0, 1], [0.0381, 0, 1], [0.0018, 0, 4], [0.0501, 0, 0], [0.042, 0, 0], [0.0367, 0, 1], [0.0007, 0, 2], [0.9951, 1, 0], [0.0151, 0, 0], [0.0013, 0, 4], [0.0327, 0, 2], [0.0011, 0, 0], [0.0012, 0, 2], [0.0087, 0, 1], [0.9729, 1, 2], [0.8637, 1, 0], [0.0034, 0, 0], [0.0433, 0, 2], [0.0004, 0, 2], [0.0008, 0, 0], [0.0171, 0, 0], [0.0047, 0, 1], [0.0055, 0, 2], [0.0091, 0, 4], [0.0062, 0, 0], [0.1076, 0, 3], [0.262, 0, 2], [0.0109, 0, 2], [0.0106, 0, 4], [0.0029, 0, 0], [0.0037, 0, 4], [0.0016, 0, 4], [0.9621, 1, 1], [0.0092, 0, 4], [0.0025, 0, 2], [0.0035, 0, 2], [0.0681, 0, 2], [0.0055, 0, 4], [0.0248, 0, 0], [0.0549, 0, 2], [0.0171, 0, 2], [0.0675, 0, 4], [0.0007, 0, 4], [0.0003, 0, 4], [0.0016, 0, 4], [0.0002, 0, 4], [0.0004, 0, 2], [0.0004, 0, 4], [0.002, 0, 4], [0.0011, 0, 4], [0.0006, 0, 0], [0.0063, 0, 0], [0.9432, 1, 3], [0.0203, 0, 0], [0.0009, 0, 2], [0.0668, 0, 2], [0.0144, 0, 0], [0.0096, 0, 0], [0.0076, 0, 2], [0.0016, 0, 4], [0.0008, 0, 0], [0.0016, 0, 4], [0.0049, 0, 4], [0.0005, 0, 4], [0.9233, 1, 0], [0.0132, 0, 4], [0.0071, 0, 0], [0.0081, 0, 4], [0.0005, 0, 4], [0.0014, 0, 4], [0.0005, 0, 2], [0.0003, 0, 4], [0.0155, 0, 1], [0.0077, 0, 2], [0.0006, 0, 4], [0.0142, 0, 4], [0.9773, 1, 2], [0.8767, 1, 0], [0.0157, 0, 2], [0.0034, 0, 4], [0.0046, 0, 4], [0.0004, 0, 4], [0.8824, 1, 0], [0.031, 0, 3], [0.9964, 1, 0], [0.9507, 1, 2], [0.0415, 0, 0], [0.155, 0, 2], [0.0006, 0, 4], [0.9981, 1, 0], [0.0017, 0, 4], [0.5788, 1, 2], [0.0007, 0, 4], [0.9752, 0, 3], [0.0546, 0, 4], [0.0007, 0, 4], [0.002, 0, 4], [0.0003, 0, 4], [0.7912, 1, 0], [0.0057, 0, 2], [0.0088, 0, 4], [0.0039, 0, 4], [0.0035, 0, 1], [0.0008, 0, 4], [0.7887, 1, 2], [0.1149, 0, 0], [0.0999, 0, 0], [0.0003, 0, 4], [0.0013, 0, 4], [0.0011, 0, 4], [0.0005, 0, 2], [0.0077, 0, 0], [0.1709, 0, 0], [0.004, 0, 2], [0.8312, 1, 1], [0.3548, 1, 0], [0.0791, 0, 3], [0.0217, 0, 2], [0.0008, 0, 2], [0.0015, 0, 4], [0.0251, 0, 0], [0.0421, 0, 3], [0.0027, 0, 4], [0.0016, 0, 4], [0.0015, 0, 4], [0.0816, 0, 2], [0.0123, 0, 1], [0.0011, 0, 4], [0.3794, 1, 0], [0.414, 0, 3], [0.004, 0, 0], [0.0028, 0, 0], [0.0007, 0, 4], [0.0021, 0, 4], [0.0003, 0, 4], [0.0069, 0, 4], [0.9969, 1, 0], [0.0014, 0, 2], [0.0518, 0, 1], [0.0003, 0, 4], [0.0005, 0, 4], [0.0008, 0, 0], [0.0003, 0, 4], [0.0006, 0, 2], [0.0007, 0, 2], [0.1492, 0, 1], [0.0078, 0, 2], [0.0449, 0, 2], [0.0051, 0, 2], [0.0181, 0, 0], [0.0134, 0, 0], [0.0008, 0, 4], [0.0005, 0, 4], [0.0206, 0, 2], [0.0191, 0, 0], [0.0042, 0, 1], [0.9896, 1, 0], [0.9489, 1, 0], [0.0036, 0, 0], [0.0006, 0, 4], [0.0054, 0, 2], [0.024, 0, 4], [0.2931, 0, 0], [0.0009, 0, 4], [0.012, 0, 2], [0.0018, 0, 4], [0.0046, 0, 2], [0.0136, 0, 4], [0.002, 0, 4], [0.0016, 0, 0], [0.0096, 0, 0], [0.0579, 0, 1], [0.0877, 0, 2], [0.0004, 0, 2], [0.0085, 0, 2], [0.0015, 0, 4], [0.9969, 1, 2], [0.0059, 0, 0], [0.0053, 0, 4], [0.0002, 0, 4], [0.0009, 0, 4], [0.0059, 0, 2], [0.001, 0, 4], [0.0011, 0, 4], [0.002, 0, 1], [0.0031, 0, 4], [0.0003, 0, 1], [0.0211, 0, 2], [0.0042, 0, 4], [0.0019, 0, 2], [0.0054, 0, 4], [0.0013, 0, 0], [0.8739, 1, 2], [0.0028, 0, 4], [0.0301, 0, 1], [0.7843, 1, 1], [0.0016, 0, 0], [0.0007, 0, 4], [0.0005, 0, 4], [0.0042, 0, 4], [0.0006, 0, 2], [0.1868, 0, 0], [0.8468, 0, 2], [0.0016, 0, 4], [0.0124, 0, 0], [0.001, 0, 4], [0.001, 0, 4], [0.0007, 0, 2], [0.0043, 0, 4], [0.9892, 1, 4], [0.3796, 0, 4], [0.1372, 0, 0], [0.7195, 0, 3], [0.0011, 0, 4], [0.0048, 0, 2], [0.0029, 0, 2], [0.3087, 0, 4], [0.5031, 0, 2], [0.0017, 0, 4], [0.9786, 1, 2], [0.0134, 0, 4], [0.958, 1, 1], [0.0014, 0, 4], [0.0004, 0, 2], [0.0012, 0, 4], [0.0084, 0, 2], [0.5485, 1, 1], [0.0035, 0, 4], [0.0372, 0, 0], [0.0145, 0, 4], [0.0021, 0, 0], [0.8141, 1, 4], [0.9515, 0, 3], [0.016, 0, 2], [0.0726, 0, 1], [0.0044, 0, 4], [0.0039, 0, 0], [0.0026, 0, 0], [0.0055, 0, 4], [0.2777, 0, 1], [0.0018, 0, 1], [0.0017, 0, 0], [0.211, 0, 2], [0.0929, 0, 3], [0.024, 0, 1], [0.3619, 0, 0], [0.002, 0, 2], [0.0005, 0, 4], [0.0035, 0, 0], [0.0011, 0, 2], [0.089, 0, 2], [0.0022, 0, 4], [0.0009, 0, 4], [0.0019, 0, 4], [0.2705, 0, 0], [0.0094, 0, 2], [0.0019, 0, 2], [0.0007, 0, 4], [0.0009, 0, 4], [0.0362, 0, 2], [0.011, 0, 0], [0.0011, 0, 0], [0.9965, 1, 0], [0.6985, 1, 1], [0.0047, 0, 0], [0.002, 0, 4], [0.0343, 0, 1], [0.0186, 0, 0], [0.6597, 0, 1], [0.0004, 0, 1], [0.0085, 0, 0], [0.0007, 0, 2], [0.0419, 0, 2], [0.0007, 0, 4], [0.0936, 0, 1], [0.0007, 0, 4], [0.0193, 0, 2], [0.0069, 0, 0], [0.0007, 0, 4], [0.0086, 0, 0], [0.5673, 0, 2], [0.0037, 0, 4], [0.0003, 0, 4], [0.0481, 0, 2], [0.0009, 0, 2], [0.0004, 0, 4], [0.0022, 0, 1], [0.9976, 1, 0], [0.001, 0, 0], [0.0138, 0, 2], [0.0643, 0, 1], [0.0149, 0, 0], [0.3313, 0, 2], [0.0006, 0, 4], [0.0036, 0, 4], [0.0017, 0, 0], [0.0003, 0, 4], [0.657, 0, 1], [0.5572, 0, 1], [0.0034, 0, 4], [0.0008, 0, 1], [0.1019, 0, 0], [0.0063, 0, 2], [0.0022, 0, 2], [0.0012, 0, 0], [0.0009, 0, 2], [0.007, 0, 1], [0.0033, 0, 1], [0.1035, 0, 2], [0.005, 0, 0], [0.0061, 0, 0], [0.0363, 0, 0], [0.0004, 0, 4], [0.0037, 0, 2], [0.0251, 0, 4], [0.7814, 1, 1], [0.002, 0, 4], [0.0016, 0, 4], [0.0005, 0, 4], [0.0651, 0, 0], [0.3037, 0, 0], [0.0019, 0, 4], [0.0016, 0, 0], [0.002, 0, 2], [0.045, 0, 0], [0.0561, 0, 0], [0.0029, 0, 4], [0.0052, 0, 4], [0.1502, 0, 0], [0.0003, 0, 2], [0.8057, 1, 3], [0.0024, 0, 4], [0.0287, 0, 4], [0.0023, 0, 4], [0.0053, 0, 0], [0.0019, 0, 1], [0.0011, 0, 4], [0.0007, 0, 4], [0.0324, 0, 2], [0.0014, 0, 0], [0.9918, 1, 0], [0.1154, 0, 3], [0.1131, 0, 0], [0.0074, 0, 2], [0.0003, 0, 4], [0.3418, 0, 2], [0.0106, 0, 4], [0.0046, 0, 4], [0.1706, 0, 0], [0.9105, 1, 1], [0.5392, 0, 4], [0.133, 0, 1], [0.0164, 0, 0], [0.0043, 0, 2], [0.0016, 0, 0], [0.2923, 0, 4], [0.0027, 0, 4], [0.0015, 0, 0], [0.0062, 0, 2], [0.0511, 0, 1], [0.0164, 0, 0], [0.0015, 0, 2], [0.0132, 0, 0], [0.0021, 0, 4], [0.0058, 0, 4], [0.9868, 1, 3], [0.008, 0, 0], [0.4341, 0, 3], [0.5232, 0, 1], [0.0012, 0, 0], [0.0006, 0, 4], [0.0098, 0, 0], [0.0023, 0, 4], [0.0117, 0, 2], [0.0004, 0, 4], [0.0121, 0, 4], [0.0015, 0, 2], [0.0051, 0, 0], [0.0009, 0, 2], [0.0004, 0, 2], [0.0009, 0, 1], [0.0258, 0, 4], [0.0027, 0, 0], [0.0084, 0, 4], [0.0369, 0, 0], [0.9731, 1, 0], [0.0016, 0, 2], [0.0018, 0, 0], [0.0053, 0, 2], [0.5567, 0, 1], [0.0009, 0, 1], [0.0034, 0, 4], [0.0015, 0, 2], [0.9917, 1, 0], [0.0047, 0, 1], [0.0319, 0, 4], [0.0104, 0, 0], [0.0014, 0, 2], [0.0003, 0, 4], [0.0008, 0, 4], [0.0005, 0, 0], [0.9746, 1, 3], [0.002, 0, 2], [0.0399, 0, 0], [0.0003, 0, 4], [0.9586, 1, 1], [0.0037, 0, 1], [0.9802, 1, 1], [0.0005, 0, 2], [0.0042, 0, 1], [0.0081, 0, 4], [0.0003, 0, 2], [0.596, 0, 2], [0.1001, 0, 1], [0.003, 0, 4], [0.0372, 0, 2], [0.0017, 0, 2], [0.0005, 0, 4], [0.489, 0, 3], [0.0008, 0, 4], [0.0014, 0, 4], [0.0022, 0, 2], [0.9931, 1, 2], [0.0009, 0, 0], [0.0015, 0, 0], [0.053, 0, 2], [0.0102, 0, 0], [0.0011, 0, 4], [0.9955, 1, 0], [0.0486, 0, 2], [0.2274, 1, 4], [0.0122, 0, 4], [0.013, 0, 1], [0.0016, 0, 2], [0.0071, 0, 2], [0.0062, 0, 4], [0.0011, 0, 0], [0.0011, 0, 1], [0.0004, 0, 4], [0.0005, 0, 4], [0.0005, 0, 4], [0.0019, 0, 0], [0.7354, 0, 2], [0.0009, 0, 2], [0.027, 0, 1], [0.0021, 0, 2], [0.0007, 0, 0], [0.0011, 0, 2], [0.094, 0, 2], [0.0005, 0, 4], [0.0089, 0, 2], [0.0008, 0, 0], [0.009, 0, 2], [0.0493, 0, 4], [0.0094, 0, 2], [0.0081, 0, 0], [0.0016, 0, 1], [0.001, 0, 2], [0.0021, 0, 4], [0.0092, 0, 0], [0.0012, 0, 0], [0.0091, 0, 0], [0.0019, 0, 4], [0.0121, 0, 1], [0.011, 0, 1], [0.001, 0, 4], [0.8947, 1, 3], [0.0017, 0, 4], [0.0029, 0, 4], [0.0821, 0, 2], [0.0152, 0, 2], [0.0021, 0, 4], [0.1381, 0, 0], [0.0003, 0, 4], [0.9044, 1, 1], [0.002, 0, 0], [0.0458, 0, 0], [0.3611, 0, 2], [0.0018, 0, 4], [0.0564, 0, 4], [0.9659, 1, 2], [0.0255, 0, 2], [0.0011, 0, 4], [0.9047, 0, 1], [0.0021, 0, 0], [0.1891, 0, 2], [0.0099, 0, 2], [0.0008, 0, 4], [0.0012, 0, 4], [0.0087, 0, 2], [0.0016, 0, 0], [0.0222, 0, 0], [0.0507, 0, 2], [0.0156, 0, 2], [0.0004, 0, 4], [0.0072, 0, 4], [0.0007, 0, 2], [0.024, 0, 2], [0.0016, 0, 0], [0.6181, 0, 4], [0.0037, 0, 2], [0.0061, 0, 4], [0.0004, 0, 2], [0.0039, 0, 2], [0.9824, 1, 3], [0.9353, 1, 2], [0.9799, 1, 2], [0.008, 0, 0], [0.0211, 0, 2], [0.083, 1, 3], [0.8426, 1, 1], [0.0008, 0, 4], [0.0007, 0, 4], [0.0384, 0, 0], [0.0014, 0, 4], [0.0005, 0, 4], [0.0005, 0, 4], [0.0012, 0, 1], [0.0007, 0, 0], [0.0005, 0, 4], [0.001, 0, 4], [0.192, 0, 1], [0.38, 0, 3], [0.0083, 0, 2], [0.067, 0, 1], [0.003, 0, 0], [0.0009, 0, 2], [0.0017, 0, 4], [0.0157, 0, 0], [0.0273, 0, 2], [0.0017, 0, 0], [0.0047, 0, 2], [0.0037, 0, 2], [0.0002, 0, 4], [0.0005, 0, 2], [0.0015, 0, 0], [0.7908, 1, 0], [0.0004, 0, 4], [0.0027, 0, 4], [0.0074, 0, 3], [0.5859, 0, 0], [0.0166, 0, 3], [0.0005, 0, 2], [0.1591, 0, 2], [0.0028, 0, 2], [0.0132, 0, 2], [0.2385, 0, 3], [0.0067, 0, 2], [0.9438, 1, 0], [0.0014, 0, 4], [0.0128, 0, 2], [0.006, 0, 1], [0.0066, 0, 2], [0.7902, 0, 3], [0.0362, 0, 1], [0.002, 0, 0], [0.0094, 0, 2], [0.0572, 0, 1], [0.0004, 0, 4], [0.0084, 0, 4], [0.0013, 0, 4], [0.9977, 1, 3], [0.001, 0, 0], [0.9056, 1, 0], [0.003, 0, 2], [0.1692, 0, 0], [0.0075, 0, 1], [0.003, 0, 4], [0.0226, 0, 0], [0.0005, 0, 4], [0.0023, 0, 4], [0.0004, 0, 4], [0.9684, 1, 0], [0.0008, 0, 2], [0.0005, 0, 4], [0.037, 0, 1], [0.0002, 0, 4], [0.0007, 0, 4], [0.0035, 0, 1], [0.0005, 0, 0], [0.0008, 0, 4], [0.0113, 0, 4], [0.0073, 0, 0], [0.0215, 0, 4], [0.0402, 0, 0], [0.0051, 0, 2], [0.0016, 0, 2], [0.157, 0, 2], [0.961, 1, 1], [0.0038, 0, 4], [0.013, 0, 0], [0.0036, 0, 0], [0.0003, 0, 2], [0.0036, 0, 4], [0.0008, 0, 4], [0.0006, 0, 4], [0.0186, 0, 4], [0.0019, 0, 4], [0.4023, 0, 3], [0.1504, 0, 1], [0.0004, 0, 4], [0.6104, 1, 0], [0.0011, 0, 2], [0.0005, 0, 4], [0.7993, 0, 3], [0.0016, 0, 2], [0.0005, 0, 2], [0.0004, 0, 2], [0.0032, 0, 4], [0.0124, 0, 1], [0.0515, 0, 4], [0.0047, 0, 0], [0.0009, 0, 2], [0.0008, 0, 4], [0.0698, 0, 1], [0.0228, 0, 0], [0.009, 0, 0], [0.0008, 0, 4], [0.004, 0, 2], [0.0491, 0, 3], [0.6208, 1, 2], [0.3648, 0, 1], [0.0006, 0, 4], [0.0006, 0, 4], [0.2302, 0, 2], [0.0544, 0, 0], [0.0005, 0, 4], [0.002, 0, 0], [0.3721, 0, 4], [0.9685, 1, 1], [0.0012, 0, 2], [0.0012, 0, 2], [0.0014, 0, 0], [0.0014, 0, 2], [0.0195, 0, 0], [0.0173, 0, 2], [0.0163, 0, 4], [0.0027, 0, 0], [0.0469, 0, 4], [0.002, 0, 4], [0.0007, 0, 0], [0.8371, 1, 2], [0.0007, 0, 4], [0.0009, 0, 4], [0.0016, 0, 4], [0.0049, 0, 2], [0.0053, 0, 0], [0.0014, 0, 4], [0.0002, 0, 4], [0.0023, 0, 2], [0.0011, 0, 0], [0.2455, 0, 0], [0.0017, 0, 4], [0.0023, 0, 4], [0.0006, 0, 4], [0.06, 0, 2], [0.0006, 0, 2], [0.0011, 0, 1], [0.0031, 0, 2], [0.0022, 0, 2], [0.0003, 0, 4], [0.0069, 0, 2], [0.5025, 0, 2], [0.0399, 0, 4], [0.0009, 0, 4], [0.0018, 0, 0], [0.0011, 0, 4], [0.0007, 0, 4], [0.0209, 0, 2], [0.001, 0, 2], [0.0113, 0, 0], [0.002, 0, 4], [0.8635, 1, 0], [0.0008, 0, 2], [0.0021, 0, 2], [0.0285, 0, 0], [0.0006, 0, 4], [0.0069, 0, 4], [0.0007, 0, 0], [0.0169, 0, 2], [0.0722, 0, 3], [0.0119, 0, 2], [0.1154, 0, 2], [0.0027, 0, 2], [0.0004, 0, 4], [0.416, 0, 1], [0.0094, 0, 4], [0.013, 0, 2], [0.5141, 0, 0], [0.001, 0, 4], [0.0083, 0, 2], [0.0058, 0, 2], [0.0041, 0, 4], [0.0008, 0, 4], [0.014, 0, 4], [0.0424, 0, 0], [0.7761, 0, 0], [0.0033, 0, 1], [0.0038, 0, 0], [0.0125, 0, 2], [0.0009, 0, 4], [0.3556, 0, 0], [0.0071, 0, 4], [0.0458, 0, 2], [0.2384, 0, 2], [0.458, 0, 3], [0.0031, 0, 0], [0.0365, 0, 4], [0.0005, 0, 4], [0.086, 0, 0], [0.0039, 0, 4], [0.0027, 0, 4], [0.0042, 0, 0], [0.0009, 0, 4], [0.0022, 0, 4], [0.0106, 0, 2], [0.0119, 0, 0], [0.0275, 0, 0], [0.3749, 0, 2], [0.019, 0, 0], [0.3556, 0, 4], [0.001, 0, 4], [0.001, 0, 4], [0.3393, 0, 4], [0.004, 0, 0], [0.0009, 0, 4], [0.0003, 0, 4], [0.0014, 0, 2]]};
+  </script>
+  <script>
+    (function () {
+      const CURVE_COLORS = ["#64748b", "#0891b2", "#2563eb", "#7c3aed", "#dc2626"];
+      const state = {
+        apiMode: Boolean(window.__FINGUARD_API_MODE__),
+        summary: null,
+        events: [],
+        evaluation: null,
+        ragEvaluation: null,
+        controls: [],
+        simulationCorpus: [],
+        activeEventId: null
+      };
+
+      function escapeHtml(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      const themeBtn = document.getElementById("theme-toggle");
+      themeBtn.addEventListener("click", () => {
+        const cur = document.documentElement.getAttribute("data-theme") || "light";
+        const next = cur === "light" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", next);
+        themeBtn.textContent = next === "light" ? "Toggle Dark Mode" : "Toggle Light Mode";
+      });
+
+      document.querySelectorAll("nav.tabs button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+        });
+      });
+
+      async function loadData() {
+        document.getElementById("mode-pill").textContent = state.apiMode ? "Mode: Live Flask API" : "Mode: Static Snapshot";
+        if (state.apiMode) {
+          const [sRes, eRes, mRes] = await Promise.all([
+            fetch("/api/summary"),
+            fetch("/api/events?limit=180"),
+            fetch("/api/models/evaluation")
+          ]);
+          state.summary = await sRes.json();
+          const eJson = await eRes.json();
+          state.events = eJson.events || [];
+          const mJson = await mRes.json();
+          state.evaluation = mJson;
+          state.ragEvaluation = mJson.rag_evaluation || {};
+        } else {
+          const snap = window.__FINGUARD_SNAPSHOT__ || {};
+          state.summary = snap.summary || {};
+          state.events = snap.events || [];
+          state.evaluation = snap.evaluation || {};
+          state.ragEvaluation = snap.rag_evaluation || {};
+          state.controls = snap.controls || [];
+          state.simulationCorpus = snap.simulation_corpus || [];
+        }
+        const champThresh = (state.evaluation && state.evaluation.champion_threshold) || 0.45;
+        document.getElementById("sim-thresh").value = champThresh;
+        renderOverview();
+        populateDeptFilter();
+        renderTriage();
+        renderModels();
+        runRagSearch("off-hours bulk export of client KYC records");
+        runSimulation();
+      }
+
+      function renderOverview() {
+        const s = state.summary || {};
+        const revStats = s.review_stats || { reviewed_findings: 0, total_review_actions: 0 };
+        document.getElementById("reviewed-pill").textContent = `Reviewed: ${revStats.reviewed_findings || 0}`;
+        const kpis = [
+          { label: "Total Audited Events", value: (s.total_events || 0).toLocaleString(), sub: `90-day IAM telemetry • ${revStats.reviewed_findings || 0} human-reviewed` },
+          { label: "Critical & High Findings", value: ((s.critical_findings || 0) + (s.high_findings || 0)).toLocaleString(), sub: `${s.critical_findings || 0} Critical / ${s.high_findings || 0} High` },
+          { label: "Governance Maturity", value: `${s.overall_maturity || 0}/100`, sub: "5-domain observable baseline" },
+          { label: "Alert Compression", value: `${s.alert_compression_pct || 0}%`, sub: `${s.analyst_hours_saved_quarter || 0} analyst hrs saved/qtr` },
+          { label: "Exposure Mitigated", value: `HK$${(s.avoided_exposure_hkd || 0).toLocaleString()}`, sub: "Holdout-calibrated quarterly ROI" }
+        ];
+        document.getElementById("kpi-grid").innerHTML = kpis.map(k => `
+          <div class="card">
+            <div class="kpi-label">${escapeHtml(k.label)}</div>
+            <div class="kpi-value">${escapeHtml(k.value)}</div>
+            <div class="kpi-sub">${escapeHtml(k.sub)}</div>
+          </div>
+        `).join("");
+
+        const domains = s.domain_maturity || [];
+        document.getElementById("domain-maturity-bars").innerHTML = domains.map(d => {
+          const color = d.maturity_score >= 80 ? "#059669" : (d.maturity_score >= 65 ? "#d97706" : "#dc2626");
+          return `
+            <div class="bar-row">
+              <div class="bar-header"><span>${escapeHtml(d.domain)}</span><span>${d.maturity_score}/100 (${d.open_high_risk_findings} open)</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${d.maturity_score}%; background:${color};"></div></div>
+            </div>
+          `;
+        }).join("");
+
+        const tiers = s.tier_distribution || {};
+        const total = Math.max(1, s.total_events || 1);
+        document.getElementById("tier-summary").innerHTML = ["Critical", "High", "Medium", "Low"].map(t => {
+          const cnt = tiers[t] || 0;
+          const pct = ((cnt / total) * 100).toFixed(1);
+          return `
+            <div class="bar-row">
+              <div class="bar-header"><span><span class="badge badge-${t}">${t}</span></span><span>${cnt} events (${pct}%)</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, Number(pct))}%; background:var(--${t.toLowerCase()});"></div></div>
+            </div>
+          `;
+        }).join("");
+
+        const cells = (s.heatmap && s.heatmap.cells) || [];
+        const depts = [...new Set(cells.map(c => c.department))];
+        const sysList = [...new Set(cells.map(c => c.system_name))];
+        const lookup = {};
+        cells.forEach(c => { lookup[c.department + "|" + c.system_name] = c; });
+        let hHtml = "<table><thead><tr><th>Department</th>" + sysList.map(sy => `<th>${escapeHtml(sy)}</th>`).join("") + "</tr></thead><tbody>";
+        depts.forEach(dp => {
+          hHtml += `<tr><td><strong>${escapeHtml(dp)}</strong></td>`;
+          sysList.forEach(sy => {
+            const c = lookup[dp + "|" + sy] || { avg_risk: 0, high_count: 0 };
+            const bg = c.avg_risk >= 45 ? "var(--critical-bg)" : (c.avg_risk >= 28 ? "var(--high-bg)" : "var(--low-bg)");
+            const fg = c.avg_risk >= 45 ? "var(--critical)" : (c.avg_risk >= 28 ? "var(--high)" : "var(--low)");
+            hHtml += `<td><div class="heat-cell" style="background:${bg}; color:${fg};">${c.avg_risk} <span style="font-weight:400;font-size:10px;">(${c.high_count})</span></div></td>`;
+          });
+          hHtml += "</tr>";
+        });
+        hHtml += "</tbody></table>";
+        document.getElementById("heatmap-container").innerHTML = hHtml;
+      }
+
+      function populateDeptFilter() {
+        const sel = document.getElementById("filter-dept");
+        const depts = [...new Set(state.events.map(e => e.department))].sort();
+        depts.forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d; opt.textContent = d; sel.appendChild(opt);
+        });
+        ["filter-tier", "filter-dept", "filter-status"].forEach(id => {
+          document.getElementById(id).addEventListener("change", renderTriage);
+        });
+      }
+
+      function renderTriage() {
+        const tier = document.getElementById("filter-tier").value;
+        const dept = document.getElementById("filter-dept").value;
+        const status = document.getElementById("filter-status").value;
+        const filtered = state.events.filter(e =>
+          (tier === "All" || e.risk_tier === tier) &&
+          (dept === "All" || e.department === dept) &&
+          (status === "All" || e.review_status === status)
+        );
+        document.getElementById("triage-count").textContent = `${filtered.length} findings shown`;
+        document.getElementById("triage-tbody").innerHTML = filtered.slice(0, 60).map(e => `
+          <tr>
+            <td><strong>${escapeHtml(e.event_id)}</strong><br><span class="kpi-sub">${escapeHtml(e.employee_id)}</span></td>
+            <td>${escapeHtml(e.department)}<br><span class="kpi-sub">${escapeHtml(e.system_name)}</span></td>
+            <td><span class="badge badge-${escapeHtml(e.risk_tier)}">${e.risk_score} (${escapeHtml(e.risk_tier)})</span></td>
+            <td>${(e.ml_probability * 100).toFixed(1)}%</td>
+            <td>${(e.reason_codes || []).map(r => `<div style="font-size:12px;">• ${escapeHtml(r)}</div>`).join("")}</td>
+            <td>${(e.mapped_controls || []).map(c => `<span class="pill">${escapeHtml(c)}</span>`).join(" ")}</td>
+            <td><strong>${escapeHtml(e.review_status)}</strong></td>
+            <td><button class="btn" type="button" data-review-id="${escapeHtml(e.event_id)}">Review</button></td>
+          </tr>
+        `).join("");
+
+        document.querySelectorAll("[data-review-id]").forEach(btn => {
+          btn.addEventListener("click", () => openReviewModal(btn.dataset.reviewId));
+        });
+      }
+
+      function renderReviewHistory(history) {
+        const box = document.getElementById("modal-history-box");
+        if (!history || !history.length) {
+          box.innerHTML = "<strong>Audit Trail:</strong> No prior auditor dispositions recorded.";
+          return;
+        }
+        box.innerHTML = "<strong>Immutable Audit Trail:</strong>" + history.map(h => `
+          <div style="margin-top:6px; padding-top:6px; border-top:1px solid var(--border);">
+            <span class="pill">${escapeHtml(h.status)}</span> by <strong>${escapeHtml(h.reviewer)}</strong>
+            <span class="kpi-sub">(${escapeHtml(h.created_at)})</span>
+            ${h.comment ? `<div style="margin-top:2px;">${escapeHtml(h.comment)}</div>` : ""}
+          </div>
+        `).join("");
+      }
+
+      async function openReviewModal(eventId) {
+        const ev = state.events.find(e => e.event_id === eventId);
+        if (!ev) return;
+        state.activeEventId = eventId;
+        document.getElementById("modal-title").textContent = `Review Finding: ${ev.event_id}`;
+        document.getElementById("modal-meta").textContent = `${ev.department} • ${ev.system_name} • ${ev.primary_domain || ""} • Risk Score ${ev.risk_score}/100`;
+        document.getElementById("modal-status").value = ev.review_status === "Pending Review" ? "Confirmed Violation" : ev.review_status;
+        document.getElementById("modal-comment").value = "";
+        renderReviewHistory(ev.review_history || []);
+
+        const briefBox = document.getElementById("modal-brief-box");
+        briefBox.textContent = "Generating executive remediation brief...";
+        document.getElementById("review-modal").classList.add("open");
+
+        if (state.apiMode) {
+          try {
+            const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/brief`, { method: "POST" });
+            if (res.ok) {
+              const data = await res.json();
+              briefBox.innerHTML = `<strong>Audit Brief (${escapeHtml(data.mode)}):</strong> ${escapeHtml(data.brief)}`;
+              return;
+            }
+          } catch (_) {}
+        }
+        const ctrls = (ev.mapped_controls || []).join(", ") || "HKMA-TMG1-4.1";
+        briefBox.innerHTML = `<strong>Audit Brief (deterministic):</strong> Finding ${escapeHtml(ev.event_id)} (${escapeHtml(ev.risk_tier)}, ${ev.risk_score}/100) in ${escapeHtml(ev.department)} on ${escapeHtml(ev.system_name)}. Triggers: ${escapeHtml((ev.reason_codes || []).join("; "))}. Controls: ${escapeHtml(ctrls)}.`;
+      }
+
+      document.getElementById("modal-cancel").addEventListener("click", () => {
+        document.getElementById("review-modal").classList.remove("open");
+      });
+
+      document.getElementById("modal-save").addEventListener("click", async () => {
+        const id = state.activeEventId;
+        const status = document.getElementById("modal-status").value;
+        const reviewer = document.getElementById("modal-reviewer").value || "Internal IT Auditor";
+        const comment = document.getElementById("modal-comment").value || "";
+        if (state.apiMode) {
+          const res = await fetch(`/api/events/${encodeURIComponent(id)}/review`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status, reviewer, comment })
+          });
+          if (res.ok) {
+            const body = await res.json();
+            const idx = state.events.findIndex(e => e.event_id === id);
+            if (idx >= 0) state.events[idx] = body.finding;
+            if (body.review_stats && state.summary) {
+              state.summary.review_stats = body.review_stats;
+              renderOverview();
+            }
+          }
+        } else {
+          const ev = state.events.find(e => e.event_id === id);
+          if (ev) {
+            ev.review_status = status;
+            ev.review_history = ev.review_history || [];
+            ev.review_history.unshift({ status, reviewer, comment, created_at: new Date().toISOString() });
+          }
+        }
+        document.getElementById("review-modal").classList.remove("open");
+        renderTriage();
+      });
+
+      async function runRagSearch(queryText) {
+        let hits = [];
+        if (state.apiMode) {
+          const res = await fetch("/api/compliance/query", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: queryText, top_k: 3, mode: "hybrid" })
+          });
+          const body = await res.json();
+          hits = body.results || [];
+        } else {
+          const qTokens = queryText.toLowerCase().split(/\W+/).filter(Boolean);
+          hits = state.controls.map(c => {
+            const hay = `${c.title} ${c.description} ${(c.keywords || []).join(" ")}`.toLowerCase();
+            let score = 0;
+            qTokens.forEach(t => { if (hay.includes(t)) score += 1; });
+            return { ...c, relevance_score: Math.min(0.99, (score / Math.max(1, qTokens.length)) * 0.9 + 0.08) };
+          }).sort((a, b) => b.relevance_score - a.relevance_score).slice(0, 3);
+        }
+
+        document.getElementById("rag-results").innerHTML = hits.map(h => `
+          <div class="card" style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <div><span class="pill">${escapeHtml(h.framework)}</span> <strong>${escapeHtml(h.control_id)} — ${escapeHtml(h.title)}</strong></div>
+              <span class="badge badge-Low">Relevance: ${(h.relevance_score * 100).toFixed(1)}%</span>
+            </div>
+            <p style="font-size:13.5px; margin:8px 0;">${escapeHtml(h.description)}</p>
+            <div style="font-size:12.5px; color:var(--text-muted);"><strong>Remediation Checklist (${h.estimated_effort_hours}h est.):</strong></div>
+            <ul style="margin:6px 0 0 18px; font-size:13px;">
+              ${(h.remediation_steps || []).map(st => `<li>${escapeHtml(st)}</li>`).join("")}
+            </ul>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("rag-search-btn").addEventListener("click", () => {
+        const q = document.getElementById("rag-input").value.trim();
+        if (q) runRagSearch(q);
+      });
+      document.querySelectorAll(".rag-preset").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById("rag-input").value = btn.dataset.q;
+          runRagSearch(btn.dataset.q);
+        });
+      });
+
+      function drawCurveSvg(svgId, legendId, curvesMap, key) {
+        const svg = document.getElementById(svgId);
+        const legend = document.getElementById(legendId);
+        const padL = 40, padB = 28, padT = 12, padR = 16;
+        const w = 420 - padL - padR, h = 245 - padT - padB;
+        let out = `<rect x="${padL}" y="${padT}" width="${w}" height="${h}" fill="none" stroke="var(--border)" />`;
+
+        [0, 0.5, 1.0].forEach(tick => {
+          const tx = (padL + tick * w).toFixed(1);
+          const ty = (padT + (1 - tick) * h).toFixed(1);
+          out += `<line x1="${padL}" y1="${ty}" x2="${padL + w}" y2="${ty}" stroke="var(--border)" stroke-dasharray="3,3" opacity="0.6" />`;
+          out += `<text x="${padL - 6}" y="${Number(ty) + 3}" text-anchor="end" font-size="10" fill="var(--text-muted)">${tick.toFixed(1)}</text>`;
+          out += `<text x="${tx}" y="${padT + h + 13}" text-anchor="middle" font-size="10" fill="var(--text-muted)">${tick.toFixed(1)}</text>`;
+        });
+
+        const names = Object.keys(curvesMap || {});
+        const legendItems = [];
+        names.forEach((name, idx) => {
+          const color = CURVE_COLORS[idx % CURVE_COLORS.length];
+          const pts = (curvesMap[name] && curvesMap[name][key]) || [];
+          if (!pts.length) return;
+          const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${(padL + p.x * w).toFixed(1)},${(padT + (1 - p.y) * h).toFixed(1)}`).join(" ");
+          out += `<path d="${d}" fill="none" stroke="${color}" stroke-width="${name.includes("Champion") ? 2.6 : 1.5}" />`;
+          legendItems.push(`<span class="legend-item"><span class="legend-swatch" style="background:${color};"></span>${escapeHtml(name.split(" (")[0])}</span>`);
+        });
+        out += `<text x="${padL + w / 2}" y="241" text-anchor="middle" font-size="11" fill="var(--text-muted)">${key === "roc" ? "False Positive Rate" : "Recall"}</text>`;
+        out += `<text x="12" y="${padT + h / 2}" text-anchor="middle" font-size="11" fill="var(--text-muted)" transform="rotate(-90 12 ${padT + h / 2})">${key === "roc" ? "True Positive Rate" : "Precision"}</text>`;
+        svg.innerHTML = out;
+        legend.innerHTML = legendItems.join("");
+      }
+
+      function renderModels() {
+        const ev = state.evaluation || {};
+        const rows = ev.benchmarks || [];
+        document.getElementById("benchmark-tbody").innerHTML = rows.map(r => `
+          <tr>
+            <td><strong>${escapeHtml(r.model_name)}</strong></td>
+            <td>${r.roc_auc.toFixed(4)}</td><td>${r.pr_auc.toFixed(4)}</td>
+            <td>${r.precision.toFixed(4)}</td><td>${r.recall.toFixed(4)}</td>
+            <td>${r.f1.toFixed(4)}</td><td>${r.f2.toFixed(4)}</td>
+            <td>${r.fpr.toFixed(4)}</td><td>${(r.alert_compression_ratio * 100).toFixed(1)}%</td>
+            <td>${r.analyst_hours_saved_quarter}h</td>
+          </tr>
+        `).join("");
+
+        drawCurveSvg("roc-svg", "roc-legend", ev.curves || {}, "roc");
+        drawCurveSvg("pr-svg", "pr-legend", ev.curves || {}, "pr");
+
+        const feats = (ev.feature_importance || []).slice(0, 8);
+        const maxImp = Math.max(0.01, ...feats.map(f => f.importance_mean));
+        document.getElementById("feat-imp-bars").innerHTML = feats.map(f => {
+          const pct = Math.max(2, (Math.max(0, f.importance_mean) / maxImp) * 100);
+          return `
+            <div class="bar-row">
+              <div class="bar-header"><span>${escapeHtml(f.feature)}</span><span>+${f.importance_mean.toFixed(4)} PR-AUC</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:var(--accent);"></div></div>
+            </div>
+          `;
+        }).join("");
+
+        const err = ev.error_analysis || {};
+        const rag = state.ragEvaluation || {};
+        const ablationRows = (rag.ablation || []).map(a => `
+          <tr>
+            <td>${escapeHtml(a.mode)}</td>
+            <td>${(a.recall_at_1 * 100).toFixed(1)}%</td>
+            <td>${(a.recall_at_3 * 100).toFixed(1)}%</td>
+            <td>${a.mrr.toFixed(4)}</td>
+          </tr>
+        `).join("");
+
+        document.getElementById("error-analysis-box").innerHTML = `
+          <p style="font-size:13px; margin-top:0;"><strong>Holdout Test Set:</strong> ${err.test_size || 0} events (${err.test_violations || 0} actual violations)</p>
+          <p style="font-size:13px;"><strong>False Positives (${err.false_positives_count || 0}):</strong> ${escapeHtml((err.fp_sample_causes || []).join("; "))}</p>
+          <p style="font-size:13px;"><strong>False Negatives (${err.false_negatives_count || 0}):</strong> ${escapeHtml((err.fn_sample_causes || []).join("; "))}</p>
+          <hr style="border:none; border-top:1px solid var(--border); margin:12px 0;" />
+          <p style="font-size:13px; margin-bottom:6px;"><strong>Compliance RAG Ablation (${rag.num_queries || 24} paraphrased queries):</strong></p>
+          ${ablationRows ? `<table><thead><tr><th>Mode</th><th>R@1</th><th>R@3</th><th>MRR</th></tr></thead><tbody>${ablationRows}</tbody></table>` : ""}
+        `;
+      }
+
+      async function runSimulation() {
+        const thresh = Number(document.getElementById("sim-thresh").value);
+        const budget = Number(document.getElementById("sim-budget").value);
+        const domainFocus = document.getElementById("sim-domain").value;
+        document.getElementById("sim-thresh-val").textContent = thresh.toFixed(2);
+        document.getElementById("sim-budget-val").textContent = `${budget}h`;
+
+        let sim;
+        if (state.apiMode) {
+          const res = await fetch("/api/simulate/remediation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ alert_threshold: thresh, budget_hours: budget, domain_focus: domainFocus })
+          });
+          sim = await res.json();
+        } else {
+          const scale = 90.0 / 23.0;
+          const DOMAINS = ["Access & Identity", "Change & Operations", "Data Protection", "AI & Third-Party Governance", "Monitoring & Audit"];
+          let all = (state.simulationCorpus || []).map(item => Array.isArray(item)
+            ? { ml_probability: item[0], is_violation: item[1], primary_domain: DOMAINS[item[2]] || "Monitoring & Audit" }
+            : item
+          );
+          if (domainFocus !== "All") {
+            all = all.filter(e => e.primary_domain === domainFocus);
+          }
+          const flagged = all.filter(e => e.ml_probability >= thresh);
+          const tp = flagged.filter(e => e.is_violation === 1).length;
+          const totalPos = Math.max(1, all.filter(e => e.is_violation === 1).length);
+          const scaledFlagged = Math.round(flagged.length * scale);
+          const hoursReq = scaledFlagged * 0.35;
+          const cov = Math.min(1, budget / Math.max(1, hoursReq));
+          const remTp = Math.round(tp * cov);
+          const scaledRemTp = Math.round(remTp * scale);
+          sim = {
+            flagged_alerts: scaledFlagged,
+            recall: all.length ? tp / totalPos : 0,
+            precision: flagged.length ? tp / flagged.length : 0,
+            risk_reduction_pct: all.length ? (remTp / totalPos) * 100 : 0,
+            avoided_exposure_hkd: scaledRemTp * 18500
+          };
+        }
+
+        document.getElementById("sim-results-grid").innerHTML = [
+          { label: "Flagged Alerts / Qtr", value: sim.flagged_alerts, sub: `Precision ${(sim.precision * 100).toFixed(1)}%` },
+          { label: "Out-of-Sample Recall", value: `${(sim.recall * 100).toFixed(1)}%`, sub: "Holdout violations surfaced" },
+          { label: "Risk Reduction", value: `${Number(sim.risk_reduction_pct).toFixed(1)}%`, sub: "Within analyst hour budget" },
+          { label: "Avoided Exposure", value: `HK$${Number(sim.avoided_exposure_hkd).toLocaleString()}`, sub: "Annualized quarterly ROI" }
+        ].map(k => `
+          <div class="card" style="background:var(--surface-alt);">
+            <div class="kpi-label">${escapeHtml(k.label)}</div>
+            <div class="kpi-value" style="font-size:21px;">${escapeHtml(k.value)}</div>
+            <div class="kpi-sub">${escapeHtml(k.sub)}</div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("sim-thresh").addEventListener("input", runSimulation);
+      document.getElementById("sim-budget").addEventListener("input", runSimulation);
+      document.getElementById("sim-domain").addEventListener("change", runSimulation);
+      loadData();
+    })();
+  </script>
+</body>
+</html>
